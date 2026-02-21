@@ -32,7 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             // ->path('admin')
             ->viteTheme('resources/css/filament/admin/theme.css')
-            ->domain('admin.local.test')
+            ->domain(env('ADMIN_PANEL_DOMAIN', 'admin.local.test'))
             ->login()
             ->profile(EditProfile::class)
             ->brandLogo(asset('images/logo.png'))

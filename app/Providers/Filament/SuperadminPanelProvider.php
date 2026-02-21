@@ -31,7 +31,7 @@ class SuperadminPanelProvider extends PanelProvider
             ->id('superadmin')
             ->viteTheme('resources/css/filament/superadmin/theme.css')
             // ->path('superadmin')
-            ->domain('superadmin.local.test')
+            ->domain(env('SUPERADMIN_PANEL_DOMAIN', 'superadmin.local.test'))
             ->login()
             ->profile(isSimple: false)
             ->brandName('Superadmin Panel')
