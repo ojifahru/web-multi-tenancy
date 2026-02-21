@@ -1,0 +1,18 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+@theme {
+    --color-superadmin-bg: #0b1120;
+    --color-superadmin-sidebar: #0f172a;
+    --color-superadmin-card: #111827;
+    --color-superadmin-neon-cyan: #00e5ff;
+    --color-superadmin-neon-violet: #7c3aed;
+    --color-superadmin-neon-success: #22d3ee;
+    --color-superadmin-neon-danger: #f43f5e;
+    --color-superadmin-text-primary: #e5e7eb;
+    --color-superadmin-text-secondary: #94a3b8;
+}
+
+@import './neon-control-center.css';
