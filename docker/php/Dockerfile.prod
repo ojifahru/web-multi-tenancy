@@ -62,6 +62,18 @@ COPY docker/php/conf.d/app.ini /usr/local/etc/php/conf.d/99-app.ini
 RUN groupadd -g "${WWWGROUP}" app \
     && useradd -m -u "${WWWUSER}" -g "${WWWGROUP}" -s /bin/bash app
 
+FROM app-base AS composer-deps
+
+WORKDIR /var/www/html
+
+COPY composer.json composer.lock ./
+RUN composer install \
+        --no-dev \
+        --prefer-dist \
+        --no-interaction \
+        --no-progress \
+        --no-scripts
+
 FROM node:22-alpine AS frontend-builder
 
 WORKDIR /var/www/html
@@ -69,9 +81,11 @@ WORKDIR /var/www/html
 COPY package.json package-lock.json ./
 RUN npm ci
 
+COPY app ./app
 COPY resources ./resources
 COPY public ./public
 COPY vite.config.js ./vite.config.js
+COPY --from=composer-deps /var/www/html/vendor ./vendor
 RUN npm run build
 
 FROM app-base AS app
@@ -83,14 +97,19 @@ COPY --from=frontend-builder --chown=app:app /var/www/html/public/build ./public
 
 USER app
 
-RUN composer install \
+RUN mkdir -p \
+        storage/framework/cache/data \
+        storage/framework/sessions \
+        storage/framework/views \
+        storage/logs \
+        bootstrap/cache \
+    && chmod -R ug+rwx storage bootstrap/cache \
+    && composer install \
         --no-dev \
         --prefer-dist \
         --optimize-autoloader \
         --no-interaction \
         --no-progress \
-    && mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
-    && chmod -R ug+rwx storage bootstrap/cache \
     && (php artisan storage:link || true)
 
 CMD ["php-fpm"]
