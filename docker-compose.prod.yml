@@ -1,0 +1,50 @@
+name: ${COMPOSE_PROJECT_NAME:-multi-tenant}
+
+services:
+  multi-tenant_app:
+    image: ${APP_IMAGE}
+    pull_policy: always
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - shared_net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - app_storage:/var/www/html/storage
+
+  multi-tenant_queue:
+    image: ${APP_IMAGE}
+    pull_policy: always
+    restart: unless-stopped
+    command: php artisan queue:work --sleep=1 --tries=3 --timeout=120
+    env_file:
+      - .env
+    networks:
+      - shared_net
+    depends_on:
+      - multi-tenant_app
+    volumes:
+      - app_storage:/var/www/html/storage
+
+  multi-tenant_nginx:
+    image: ${NGINX_IMAGE}
+    pull_policy: always
+    depends_on:
+      - multi-tenant_app
+    restart: unless-stopped
+    ports:
+      - "${NGINX_BIND_IP:-127.0.0.1}:${NGINX_HTTP_PORT:-8002}:80"
+    volumes:
+      - app_storage:/var/www/html/storage:ro
+    networks:
+      - shared_net
+
+volumes:
+  app_storage:
+
+networks:
+  shared_net:
+    external: true
+    name: shared_net
