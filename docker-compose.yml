@@ -57,3 +57,4 @@ services:
 networks:
   shared_net:
     name: ${COMPOSE_NETWORK_NAME:-shared_net}
+    external: true
