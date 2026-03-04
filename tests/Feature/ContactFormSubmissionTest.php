@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\User;
 use App\Models\StudyProgram;
+use App\Models\User;
 use Filament\Notifications\DatabaseNotification as FilamentDatabaseNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -9,11 +9,12 @@ uses(RefreshDatabase::class);
 
 test('public visitor can submit contact message', function () {
     $tenant = createActiveStudyProgram();
+    $contactPath = '/id/kontak-kami';
 
     $response = $this
         ->withServerVariables(['HTTP_HOST' => $tenant->domain])
         ->withHeader('User-Agent', 'Pest Test Agent')
-        ->post('/kontak-kami', [
+        ->post($contactPath, [
             'name' => 'Budi Santoso',
             'email' => 'budi@example.com',
             'phone' => '081234567890',
@@ -22,7 +23,7 @@ test('public visitor can submit contact message', function () {
         ]);
 
     $response
-        ->assertRedirect('/kontak-kami')
+        ->assertRedirect($contactPath)
         ->assertSessionHas('success');
 
     $this->assertDatabaseHas('contact_messages', [
@@ -40,11 +41,12 @@ test('public visitor can submit contact message', function () {
 
 test('contact message submission validates required fields', function () {
     $tenant = createActiveStudyProgram();
+    $contactPath = '/id/kontak-kami';
 
     $response = $this
         ->withServerVariables(['HTTP_HOST' => $tenant->domain])
-        ->from('/kontak-kami')
-        ->post('/kontak-kami', [
+        ->from($contactPath)
+        ->post($contactPath, [
             'name' => '',
             'email' => 'email-tidak-valid',
             'phone' => '',
@@ -53,7 +55,7 @@ test('contact message submission validates required fields', function () {
         ]);
 
     $response
-        ->assertRedirect('/kontak-kami')
+        ->assertRedirect($contactPath)
         ->assertSessionHasErrors(['name', 'email', 'subject', 'message']);
 
     $this->assertDatabaseCount('contact_messages', 0);
@@ -62,19 +64,20 @@ test('contact message submission validates required fields', function () {
 test('study program admins receive notification when contact message is submitted', function () {
     $tenant = createActiveStudyProgram();
     $adminUser = User::factory()->create();
+    $contactPath = '/id/kontak-kami';
 
     $tenant->users()->attach($adminUser);
 
     $this
         ->withServerVariables(['HTTP_HOST' => $tenant->domain])
-        ->post('/kontak-kami', [
+        ->post($contactPath, [
             'name' => 'Siti Nurhaliza',
             'email' => 'siti@example.com',
             'phone' => '089900112233',
             'subject' => 'Informasi jadwal kuliah',
             'message' => 'Mohon info jadwal perkuliahan semester ini dan cara akses LMS.',
         ])
-        ->assertRedirect('/kontak-kami');
+        ->assertRedirect($contactPath);
 
     $this->assertDatabaseHas('notifications', [
         'notifiable_type' => User::class,

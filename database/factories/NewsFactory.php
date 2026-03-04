@@ -39,15 +39,15 @@ class NewsFactory extends Factory
         };
 
         return [
-            'study_program_id' => fn(): int => $this->resolveStudyProgramId(),
+            'study_program_id' => fn (): int => $this->resolveStudyProgramId(),
             'title' => $title,
-            'slug' => Str::slug($title) . '-' . fake()->unique()->numberBetween(1000, 999999),
+            'slug' => Str::slug($title).'-'.fake()->unique()->numberBetween(1000, 999999),
             'excerpt' => fake()->optional(0.9)->paragraph(),
             'content' => collect(fake()->paragraphs(6))
-                ->map(fn(string $paragraph): string => '<p>' . e($paragraph) . '</p>')
+                ->map(fn (string $paragraph): string => '<p>'.e($paragraph).'</p>')
                 ->implode(PHP_EOL),
-            'author_id' => fn(): ?int => $this->resolveAuthorId(),
-            'category_id' => fn(array $attributes): ?int => $this->resolveCategoryId((int) $attributes['study_program_id']),
+            'author_id' => fn (): ?int => $this->resolveAuthorId(),
+            'category_id' => fn (array $attributes): ?int => $this->resolveCategoryId((int) $attributes['study_program_id']),
             'published_at' => $publishedAt,
             'status' => $status,
             'is_featured' => fake()->boolean(20),
@@ -75,7 +75,7 @@ class NewsFactory extends Factory
 
     public function draft(): static
     {
-        return $this->state(fn(): array => [
+        return $this->state(fn (): array => [
             'status' => 'draft',
             'published_at' => null,
             'is_featured' => false,
@@ -84,7 +84,7 @@ class NewsFactory extends Factory
 
     public function published(): static
     {
-        return $this->state(fn(): array => [
+        return $this->state(fn (): array => [
             'status' => 'published',
             'published_at' => fake()->dateTimeBetween('-6 months', 'now'),
         ]);
@@ -92,7 +92,7 @@ class NewsFactory extends Factory
 
     public function archived(): static
     {
-        return $this->state(fn(): array => [
+        return $this->state(fn (): array => [
             'status' => 'archived',
             'published_at' => fake()->dateTimeBetween('-2 years', '-6 months'),
             'is_featured' => false,
@@ -101,7 +101,7 @@ class NewsFactory extends Factory
 
     public function featured(): static
     {
-        return $this->published()->state(fn(): array => [
+        return $this->published()->state(fn (): array => [
             'is_featured' => true,
         ]);
     }
@@ -115,7 +115,7 @@ class NewsFactory extends Factory
         }
 
         $studyProgram = StudyProgram::query()->create([
-            'name' => fake()->company() . ' Study Program',
+            'name' => fake()->company().' Study Program',
             'code' => strtoupper(fake()->unique()->bothify('SP###')),
             'domain' => fake()->unique()->domainName(),
             'description' => fake()->sentence(),

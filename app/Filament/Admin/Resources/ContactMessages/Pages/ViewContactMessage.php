@@ -9,7 +9,7 @@ class ViewContactMessage extends ViewRecord
 {
     protected static string $resource = ContactMessageResource::class;
 
-    public function mount(int | string $record): void
+    public function mount(int|string $record): void
     {
         parent::mount($record);
 

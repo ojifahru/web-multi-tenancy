@@ -22,10 +22,15 @@ class ContactMessageResource extends Resource
     protected static ?string $model = ContactMessage::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelope;
+
     protected static string|UnitEnum|null $navigationGroup = 'Pesan';
+
     protected static ?int $navigationSort = 25;
+
     protected static ?string $navigationLabel = 'Pesan Kontak';
+
     protected static ?string $modelLabel = 'Pesan Kontak';
+
     protected static ?string $pluralModelLabel = 'Pesan Kontak';
 
     protected static ?string $recordTitleAttribute = 'name';

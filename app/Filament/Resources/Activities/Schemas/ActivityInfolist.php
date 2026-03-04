@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Activities\Schemas;
 
-use Filament\Infolists;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
@@ -28,7 +27,7 @@ class ActivityInfolist
                             ->colors([
                                 'primary' => 'created',
                                 'info' => 'updated',
-                                'danger'  => 'deleted',
+                                'danger' => 'deleted',
                             ]),
 
                         TextEntry::make('description')
@@ -42,8 +41,7 @@ class ActivityInfolist
                     ->columns(2)
                     ->schema([
                         TextEntry::make('subject_type')
-                            ->formatStateUsing(fn($state) =>
-                            $state ? class_basename($state) : '-'),
+                            ->formatStateUsing(fn ($state) => $state ? class_basename($state) : '-'),
 
                         TextEntry::make('subject_id'),
 
@@ -71,8 +69,8 @@ class ActivityInfolist
                                 return $fields->map(function ($field) use ($old, $new) {
                                     return [
                                         'field' => $field,
-                                        'old'   => $old[$field] ?? '-',
-                                        'new'   => $new[$field] ?? '-',
+                                        'old' => $old[$field] ?? '-',
+                                        'new' => $new[$field] ?? '-',
                                     ];
                                 })->values()->toArray();
                             })

@@ -22,15 +22,21 @@ class AboutController extends Controller
 
         abort_unless($tenant instanceof StudyProgram, 404);
 
+        $about = $tenant->resolveLocalizedValue('about');
+        $description = $tenant->resolveLocalizedValue('description');
+        $vision = $tenant->resolveLocalizedValue('vision');
+        $mission = $tenant->resolveLocalizedValue('mission');
+        $objectives = $tenant->resolveLocalizedValue('objectives');
+
         return view('public.about', [
             'tenant' => $tenant,
             'aboutHtml' => $this->contentSanitizer->sanitizeHtml(
-                $tenant->about ?: $tenant->description,
+                $about ?: $description,
                 'Profil program studi belum tersedia.',
             ),
-            'visionHtml' => $this->contentSanitizer->sanitizeHtml($tenant->vision, 'Visi program studi belum tersedia.'),
-            'missionHtml' => $this->renderListContent($tenant->mission, 'Misi belum tersedia.'),
-            'objectivesHtml' => $this->renderListContent($tenant->objectives, 'Tujuan belum tersedia.'),
+            'visionHtml' => $this->contentSanitizer->sanitizeHtml($vision, 'Visi program studi belum tersedia.'),
+            'missionHtml' => $this->renderListContent($mission, 'Misi belum tersedia.'),
+            'objectivesHtml' => $this->renderListContent($objectives, 'Tujuan belum tersedia.'),
         ]);
     }
 

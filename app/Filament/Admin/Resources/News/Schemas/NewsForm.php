@@ -2,6 +2,8 @@
 
 namespace App\Filament\Admin\Resources\News\Schemas;
 
+use App\Models\Tag;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -11,8 +13,10 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 class NewsForm
@@ -42,11 +46,13 @@ class NewsForm
                                     ->maxLength(255)
                                     ->columnSpanFull()
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
+                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
 
                                 TextInput::make('slug')
                                     ->required()
                                     ->maxLength(255)
+                                    ->alphaDash()
+                                    ->dehydrateStateUsing(fn (?string $state): ?string => filled($state) ? Str::slug($state) : null)
                                     ->columnSpanFull()
                                     ->helperText('Dibuat otomatis dari judul, tetap bisa diubah manual.'),
 
@@ -57,6 +63,7 @@ class NewsForm
 
                                 RichEditor::make('content')
                                     ->label('Konten')
+                                    ->required()
                                     ->toolbarButtons([
                                         ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link'],
                                         ['h2', 'h3', 'alignStart', 'alignCenter', 'alignEnd', 'alignJustify'],
@@ -90,11 +97,27 @@ class NewsForm
                                                 'archived' => 'Archived',
                                             ])
                                             ->default('draft')
+                                            ->live()
+                                            ->afterStateUpdated(function (Set $set, Get $get, ?string $state): void {
+                                                if ($state === 'draft') {
+                                                    if (filled($get('published_at'))) {
+                                                        $set('published_at', null);
+                                                    }
+
+                                                    return;
+                                                }
+
+                                                if ($state === 'published' && blank($get('published_at'))) {
+                                                    $set('published_at', now());
+                                                }
+                                            })
                                             ->required(),
 
                                         DateTimePicker::make('published_at')
                                             ->label('Tanggal Publikasi')
                                             ->seconds(false)
+                                            ->disabled(fn (Get $get): bool => $get('status') !== 'published')
+                                            ->required(fn (Get $get): bool => $get('status') === 'published')
                                             ->helperText('Jika kosong, berita dianggap siap dipublikasikan sekarang.'),
 
                                         Toggle::make('is_featured')
@@ -113,12 +136,26 @@ class NewsForm
                                     ->components([
                                         Select::make('category_id')
                                             ->label('Kategori')
-                                            ->relationship('category', 'name')
+                                            ->relationship(
+                                                'category',
+                                                'name',
+                                                modifyQueryUsing: fn (Builder $query): Builder => $query->when(
+                                                    Filament::getTenant()?->getKey(),
+                                                    fn (Builder $tenantQuery, int|string $tenantId): Builder => $tenantQuery->where('study_program_id', $tenantId)
+                                                )
+                                            )
                                             ->searchable()
                                             ->preload(),
 
                                         Select::make('tags')
-                                            ->relationship('tags', 'name')
+                                            ->relationship(
+                                                'tags',
+                                                'name',
+                                                modifyQueryUsing: fn (Builder $query): Builder => $query->when(
+                                                    Filament::getTenant()?->getKey(),
+                                                    fn (Builder $tenantQuery, int|string $tenantId): Builder => $tenantQuery->where('study_program_id', $tenantId)
+                                                )
+                                            )
                                             ->multiple()
                                             ->searchable()
                                             ->preload()
@@ -127,11 +164,23 @@ class NewsForm
                                                     ->required()
                                                     ->maxLength(255)
                                                     ->live(onBlur: true)
-                                                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
+                                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
                                                 TextInput::make('slug')
                                                     ->required()
-                                                    ->unique(ignoreRecord: true),
-                                            ]),
+                                                    ->alphaDash()
+                                                    ->dehydrateStateUsing(fn (?string $state): ?string => filled($state) ? Str::slug($state) : null),
+                                            ])
+                                            ->createOptionUsing(function (array $data): int {
+                                                $tenantId = Filament::getTenant()?->getKey();
+
+                                                $tag = Tag::query()->create([
+                                                    'study_program_id' => $tenantId,
+                                                    'name' => $data['name'],
+                                                    'slug' => $data['slug'],
+                                                ]);
+
+                                                return (int) $tag->getKey();
+                                            }),
                                     ]),
 
                                 Section::make('Media Utama')
@@ -146,7 +195,7 @@ class NewsForm
                                             ->disk('public')
                                             ->collection('news_image')
                                             ->image()
-                                            ->required()
+                                            ->required(fn (?string $operation): bool => $operation === 'create')
                                             ->maxFiles(1)
                                             ->maxSize(2048) // 2MB
                                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])

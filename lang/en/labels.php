@@ -1,0 +1,38 @@
+<?php
+
+return [
+    'labels' => [
+        'home' => 'Home',
+        'about' => 'About Us',
+        'news' => 'News',
+        'lecturers' => 'Lecturers',
+        'facilities' => 'Facilities',
+        'contact' => 'Contact',
+        'contact_us' => 'Contact Us',
+        'search' => 'Search',
+        'read_more' => 'Read More',
+        'back' => 'Back',
+        'send' => 'Send',
+        'submit' => 'Submit',
+        'cancel' => 'Cancel',
+        'delete' => 'Delete',
+        'edit' => 'Edit',
+        'save' => 'Save',
+        'loading' => 'Loading...',
+        'no_data' => 'No data available',
+        'language' => 'Language',
+        'english' => 'English',
+        'indonesian' => 'Indonesian',
+    ],
+    'messages' => [
+        'welcome' => 'Welcome',
+        'thank_you' => 'Thank you',
+        'success' => 'Success',
+        'error' => 'Error',
+        'not_found' => 'Not Found',
+        'page_not_found' => 'Page not found',
+        'unauthorized' => 'Unauthorized',
+        'forbidden' => 'Forbidden',
+        'something_wrong' => 'Something went wrong',
+    ],
+];

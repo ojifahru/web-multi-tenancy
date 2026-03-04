@@ -43,8 +43,8 @@ class ContactController extends Controller
         $this->sendAdminNotification($tenant, $contactMessage);
 
         return redirect()
-            ->route('public.contact')
-            ->with('success', 'Pesan Anda berhasil dikirim. Tim kami akan segera menghubungi Anda.');
+            ->to(localized_route('public.contact'))
+            ->with('success', __('contact.success_message'));
     }
 
     private function resolveTenant(Request $request): StudyProgram

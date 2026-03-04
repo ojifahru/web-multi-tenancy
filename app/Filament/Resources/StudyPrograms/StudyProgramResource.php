@@ -9,23 +9,31 @@ use App\Filament\Resources\StudyPrograms\Schemas\StudyProgramForm;
 use App\Filament\Resources\StudyPrograms\Tables\StudyProgramsTable;
 use App\Models\StudyProgram;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
+use UnitEnum;
 
 class StudyProgramResource extends Resource
 {
+    use Translatable;
+
     protected static ?string $model = StudyProgram::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
+
     protected static string|UnitEnum|null $navigationGroup = 'Manajemen Data';
+
     protected static ?int $navigationSort = 7;
+
     protected static ?string $navigationLabel = 'Program Studi';
+
     protected static ?string $pluralModelLabel = 'Program Studi';
+
     protected static ?string $modelLabel = 'Program Studi';
 
     protected static ?string $recordTitleAttribute = 'name';

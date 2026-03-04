@@ -26,18 +26,14 @@ class NewsController extends Controller
             ->where('study_program_id', $tenant->id)
             ->where('status', 'published')
             ->with('media')
-            ->where(function ($query): void {
-                $query
-                    ->whereNull('published_at')
-                    ->orWhere('published_at', '<=', now());
-            });
+            ->where('published_at', '<=', now());
 
         if ($search !== '') {
             $news->where(function ($query) use ($search): void {
                 $query
-                    ->where('title', 'like', '%' . $search . '%')
-                    ->orWhere('excerpt', 'like', '%' . $search . '%')
-                    ->orWhere('content', 'like', '%' . $search . '%');
+                    ->where('title', 'like', '%'.$search.'%')
+                    ->orWhere('excerpt', 'like', '%'.$search.'%')
+                    ->orWhere('content', 'like', '%'.$search.'%');
             });
         }
 
@@ -54,45 +50,60 @@ class NewsController extends Controller
         ]);
     }
 
-    public function show(Request $request, string $slug): View
+    public function show(Request $request, string $locale, string $slug): View
     {
         /** @var StudyProgram|null $tenant */
         $tenant = $request->attributes->get('tenant');
 
         abort_unless($tenant instanceof StudyProgram, 404);
 
-        $newsItem = News::query()
+        $locale = app()->getLocale();
+
+        $baseNewsQuery = News::query()
             ->where('study_program_id', $tenant->id)
-            ->where('slug', $slug)
             ->where('status', 'published')
             ->with('media')
-            ->where(function ($query): void {
+            ->where('published_at', '<=', now());
+
+        $normalizedSlug = trim(urldecode($slug));
+
+        $newsItem = (clone $baseNewsQuery)
+            ->where(function ($query) use ($normalizedSlug): void {
                 $query
-                    ->whereNull('published_at')
-                    ->orWhere('published_at', '<=', now());
+                    ->where('slug', $normalizedSlug)
+                    ->orWhere('slug->id', $normalizedSlug)
+                    ->orWhere('slug->en', $normalizedSlug);
             })
-            ->firstOrFail();
+            ->first();
+
+        if (! $newsItem && $normalizedSlug !== '') {
+            $newsItem = (clone $baseNewsQuery)
+                ->get()
+                ->first(function (News $candidate) use ($normalizedSlug): bool {
+                    return $candidate->matchesSlug($normalizedSlug);
+                });
+        }
+
+        abort_if(! $newsItem, 404);
 
         $relatedNews = News::query()
             ->where('study_program_id', $tenant->id)
             ->where('status', 'published')
             ->with('media')
             ->whereKeyNot($newsItem->id)
-            ->where(function ($query): void {
-                $query
-                    ->whereNull('published_at')
-                    ->orWhere('published_at', '<=', now());
-            })
+            ->where('published_at', '<=', now())
             ->orderByDesc('published_at')
             ->orderByDesc('id')
             ->limit(3)
             ->get();
 
+        $newsContent = $newsItem->resolveLocalizedValue('content', $locale);
+
         return view('public.news.show', [
             'tenant' => $tenant,
             'newsItem' => $newsItem,
             'relatedNews' => $relatedNews,
-            'newsContentHtml' => $this->contentSanitizer->sanitizeHtml($newsItem->content, 'Konten berita belum tersedia.'),
+            'newsContentHtml' => $this->contentSanitizer->sanitizeHtml($newsContent, 'Konten berita belum tersedia.'),
         ]);
     }
 }

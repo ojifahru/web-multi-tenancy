@@ -27,9 +27,9 @@ class LecturerController extends Controller
         if ($search !== '') {
             $lecturers->where(function ($query) use ($search): void {
                 $query
-                    ->where('name', 'like', '%' . $search . '%')
-                    ->orWhere('nidn', 'like', '%' . $search . '%')
-                    ->orWhere('email', 'like', '%' . $search . '%');
+                    ->where('name', 'like', '%'.$search.'%')
+                    ->orWhere('nidn', 'like', '%'.$search.'%')
+                    ->orWhere('email', 'like', '%'.$search.'%');
             });
         }
 

@@ -24,14 +24,14 @@ class UserForm
                 TextInput::make('password')
                     ->password()
                     ->revealable()
-                    ->required(fn(string $operation): bool => $operation === 'create')
-                    ->dehydrated(fn(?string $state): bool => filled($state))
+                    ->required(fn (string $operation): bool => $operation === 'create')
+                    ->dehydrated(fn (?string $state): bool => filled($state))
                     ->minLength(8),
                 TextInput::make('password_confirmation')
                     ->password()
                     ->revealable()
                     ->label('Confirm Password')
-                    ->required(fn(string $operation): bool => $operation === 'create')
+                    ->required(fn (string $operation): bool => $operation === 'create')
                     ->dehydrated(false)
                     ->same('password'),
                 Select::make('roles')

@@ -3,14 +3,13 @@
 namespace App\Filament\Resources\StudyPrograms\Schemas;
 
 use Filament\Forms\Components\RichEditor;
-use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Tabs;
-use Filament\Schemas\Components\Tabs\Tab;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Schema;
 
 class StudyProgramForm
 {
@@ -48,9 +47,13 @@ class StudyProgramForm
                         ->icon('heroicon-o-academic-cap')
                         ->columns(2)
                         ->components([
-                            Textarea::make('description')
+                            RichEditor::make('description')
                                 ->label('Deskripsi Singkat')
-                                ->rows(3)
+                                ->toolbarButtons([
+                                    ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link'],
+                                    ['alignStart', 'alignCenter', 'alignEnd', 'alignJustify'],
+                                    ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
+                                ])
                                 ->columnSpanFull(),
                             TextInput::make('faculty')
                                 ->label('Fakultas'),

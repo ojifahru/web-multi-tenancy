@@ -29,11 +29,7 @@ class HomeController extends Controller
             ->where('study_program_id', $tenant->id)
             ->where('status', 'published')
             ->with('media')
-            ->where(function ($query): void {
-                $query
-                    ->whereNull('published_at')
-                    ->orWhere('published_at', '<=', now());
-            })
+            ->where('published_at', '<=', now())
             ->orderByDesc('published_at')
             ->orderByDesc('id')
             ->limit(3)
@@ -59,29 +55,34 @@ class HomeController extends Controller
             ->where('is_active', true)
             ->count();
 
+        $accreditation = $tenant->resolveLocalizedValue('accreditation');
+        $vision = $tenant->resolveLocalizedValue('vision');
+        $mission = $tenant->resolveLocalizedValue('mission');
+        $objectives = $tenant->resolveLocalizedValue('objectives');
+
         $heroStats = [
             [
-                'label' => 'Mahasiswa',
-                'value' => $tenant->student ?? '—',
-                'desc' => 'Jumlah mahasiswa terdata',
+                'label' => __('home.stats.students.label'),
+                'value' => $tenant->student ?? __('common.placeholders.not_available'),
+                'desc' => __('home.stats.students.desc'),
                 'icon' => 'students',
             ],
             [
-                'label' => 'Dosen Aktif',
+                'label' => __('home.stats.lecturers.label'),
                 'value' => $activeLecturersCount,
-                'desc' => 'Tenaga pendidik terdaftar',
+                'desc' => __('home.stats.lecturers.desc'),
                 'icon' => 'lecturers',
             ],
             [
-                'label' => 'Akreditasi',
-                'value' => $tenant->accreditation ?? '—',
-                'desc' => 'Status akreditasi prodi',
+                'label' => __('home.stats.accreditation.label'),
+                'value' => $accreditation ?? __('common.placeholders.not_available'),
+                'desc' => __('home.stats.accreditation.desc'),
                 'icon' => 'accreditation',
             ],
             [
-                'label' => 'Berdiri Sejak',
-                'value' => $tenant->established_year ?? '—',
-                'desc' => 'Tahun pendirian program studi',
+                'label' => __('home.stats.established.label'),
+                'value' => $tenant->established_year ?? __('common.placeholders.not_available'),
+                'desc' => __('home.stats.established.desc'),
                 'icon' => 'calendar',
             ],
         ];
@@ -91,9 +92,9 @@ class HomeController extends Controller
             'latestNews' => $latestNews,
             'lecturers' => $lecturers,
             'facilities' => $facilities,
-            'visionHtml' => $this->contentSanitizer->sanitizeHtml($tenant->vision, 'Visi program studi belum tersedia.'),
-            'missionHtml' => $this->renderListContent($tenant->mission, 'Misi belum tersedia.'),
-            'objectivesHtml' => $this->renderListContent($tenant->objectives, 'Tujuan belum tersedia.'),
+            'visionHtml' => $this->contentSanitizer->sanitizeHtml($vision, __('home.about.vision_fallback')),
+            'missionHtml' => $this->renderListContent($mission, __('home.about.mission_fallback')),
+            'objectivesHtml' => $this->renderListContent($objectives, __('home.about.objectives_fallback')),
             'heroStats' => $heroStats,
         ]);
     }

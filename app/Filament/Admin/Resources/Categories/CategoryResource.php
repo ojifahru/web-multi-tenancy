@@ -10,25 +10,33 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Textarea;
-use Filament\Schemas\Components\Utilities\Set;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Support\Str;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 use UnitEnum;
 
 class CategoryResource extends Resource
 {
+    use Translatable;
+
     protected static ?string $model = Category::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFolder;
+
     protected static string|UnitEnum|null $navigationGroup = 'Manajemen Konten';
+
     protected static ?string $navigationLabel = 'Kategori';
+
     protected static ?string $pluralModelLabel = 'Kategori';
+
     protected static ?string $modelLabel = 'Kategori';
+
     protected static ?int $navigationSort = 4;
 
     protected static ?string $recordTitleAttribute = 'name';
@@ -41,7 +49,7 @@ class CategoryResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
-                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
+                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
                 TextInput::make('slug')
                     ->required()
                     ->maxLength(255)

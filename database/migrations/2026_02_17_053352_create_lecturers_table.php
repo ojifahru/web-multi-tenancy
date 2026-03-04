@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('slug');
             $table->string('email');
             $table->string('phone')->nullable();
-            $table->text('biography')->nullable();
+            $table->json('biography')->nullable();
             $table->boolean('is_active')->default(true)->index();
 
             $table->softDeletes();

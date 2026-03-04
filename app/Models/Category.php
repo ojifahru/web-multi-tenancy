@@ -2,14 +2,19 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesLocalizedTranslations;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Translatable\HasTranslations;
 
 class Category extends Model
 {
-    use LogsActivity;
+    use HasTranslations, LogsActivity, ResolvesLocalizedTranslations;
+
+    public array $translatable = ['name', 'description', 'slug'];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -21,6 +26,15 @@ class Category extends Model
         'slug',
         'description',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'name' => 'array',
+            'slug' => 'array',
+            'description' => 'array',
+        ];
+    }
 
     /**
      * Get the study program that owns the category.
@@ -51,12 +65,12 @@ class Category extends Model
                     'created' => "Kategori {$name} dibuat",
                     'updated' => "Kategori {$name} diperbarui",
                     'deleted' => "Kategori {$name} dihapus",
-                    default   => $eventName,
+                    default => $eventName,
                 };
             });
     }
 
-    public function tapActivity(Activity $activity, string $eventName)
+    public function tapActivity(Activity $activity, string $eventName): void
     {
         $activity->study_program_id = filament()->getTenant()?->id;
     }

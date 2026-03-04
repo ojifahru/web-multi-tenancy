@@ -35,26 +35,26 @@ class FacilityFactory extends Factory
             'Auditorium Akademik',
             'Pusat Riset',
             'Co-Working Space',
-        ]) . ' ' . fake()->numberBetween(1, 20);
+        ]).' '.fake()->numberBetween(1, 20);
 
         return [
-            'study_program_id' => fn(): int => $this->resolveStudyProgramId(),
+            'study_program_id' => fn (): int => $this->resolveStudyProgramId(),
             'name' => $name,
-            'slug' => Str::slug($name) . '-' . fake()->unique()->numberBetween(100, 999999),
+            'slug' => Str::slug($name).'-'.fake()->unique()->numberBetween(100, 999999),
             'description' => fake()->optional(0.85)->paragraphs(2, true),
         ];
     }
 
     public function withDescription(): static
     {
-        return $this->state(fn(): array => [
+        return $this->state(fn (): array => [
             'description' => fake()->paragraphs(2, true),
         ]);
     }
 
     public function withoutDescription(): static
     {
-        return $this->state(fn(): array => [
+        return $this->state(fn (): array => [
             'description' => null,
         ]);
     }
@@ -68,7 +68,7 @@ class FacilityFactory extends Factory
         }
 
         $studyProgram = StudyProgram::query()->create([
-            'name' => fake()->company() . ' Study Program',
+            'name' => fake()->company().' Study Program',
             'code' => strtoupper(fake()->unique()->bothify('SP###')),
             'domain' => fake()->unique()->domainName(),
             'description' => fake()->sentence(),

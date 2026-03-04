@@ -1,9 +1,17 @@
-<x-public.layout :tenant="$tenant" title="Tentang Kami">
+<x-public.layout :tenant="$tenant" :title="__('about.title')">
+    @php
+        $tenantName = $tenant->resolveLocalizedValue('name') ?? __('common.site.university_short');
+        $tenantFaculty = $tenant->resolveLocalizedValue('faculty');
+        $tenantDegreeLevel = $tenant->resolveLocalizedValue('degree_level');
+        $tenantAccreditation = $tenant->resolveLocalizedValue('accreditation');
+    @endphp
+
     <section class="bg-uniba-surface-1 py-20 sm:py-24">
         <x-public.container>
-            <x-public.page-header title="Tentang Kami"
-                subtitle="Mengenal lebih dekat profil, visi, misi, dan tujuan program studi."
-                :breadcrumbs="[['label' => 'Home', 'href' => route('public.home')], ['label' => 'Tentang Kami']]">
+            <x-public.page-header :title="__('about.title')" :subtitle="__('about.subtitle')" :breadcrumbs="[
+                ['label' => __('menu.beranda'), 'href' => localized_route('public.home')],
+                ['label' => __('about.title')],
+            ]">
                 <x-slot:icon>
                     <svg class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fill-rule="evenodd"
@@ -20,17 +28,17 @@
                     @endphp
 
                     @if (!empty($bannerUrl))
-                        <img src="{{ $bannerUrl }}" alt="Banner {{ $tenant->name }}"
-                            width="1600" height="600" loading="eager" fetchpriority="high" decoding="async"
+                        <img src="{{ $bannerUrl }}" alt="Banner {{ $tenantName }}" width="1600" height="600"
+                            loading="eager" fetchpriority="high" decoding="async"
                             class="aspect-[16/6] w-full border-b border-uniba-border object-cover">
                     @endif
 
                     <div class="p-6">
-                        <h2 class="text-lg font-semibold text-uniba-deep-blue">{{ $tenant->name }}</h2>
+                        <h2 class="text-lg font-semibold text-uniba-deep-blue">{{ $tenantName }}</h2>
                         <div class="mt-1 text-sm text-uniba-secondary">
-                            {{ $tenant->faculty ?? 'Program Studi' }}
-                            @if (!empty($tenant->degree_level))
-                                · {{ $tenant->degree_level }}
+                            {{ $tenantFaculty ?? __('about.faculty_fallback') }}
+                            @if (!empty($tenantDegreeLevel))
+                                · {{ $tenantDegreeLevel }}
                             @endif
                         </div>
 
@@ -41,30 +49,34 @@
                 </x-public.card>
 
                 <x-public.card class="p-6">
-                    <div class="text-sm font-semibold uppercase tracking-[0.12em] text-uniba-primary-blue">Profil Singkat
+                    <div class="text-sm font-semibold uppercase tracking-[0.12em] text-uniba-primary-blue">
+                        {{ __('about.profile_title') }}
                     </div>
                     <dl class="mt-5 space-y-4 text-sm">
                         <div>
-                            <dt class="text-uniba-secondary">Akreditasi</dt>
-                            <dd class="font-semibold text-uniba-text">{{ $tenant->accreditation ?? '—' }}</dd>
+                            <dt class="text-uniba-secondary">{{ __('about.accreditation') }}</dt>
+                            <dd class="font-semibold text-uniba-text">
+                                {{ $tenantAccreditation ?? __('common.placeholders.not_available') }}</dd>
                         </div>
                         <div>
-                            <dt class="text-uniba-secondary">Tahun Berdiri</dt>
-                            <dd class="font-semibold text-uniba-text">{{ $tenant->established_year ?? '—' }}</dd>
+                            <dt class="text-uniba-secondary">{{ __('about.established_year') }}</dt>
+                            <dd class="font-semibold text-uniba-text">
+                                {{ $tenant->established_year ?? __('common.placeholders.not_available') }}</dd>
                         </div>
                         <div>
-                            <dt class="text-uniba-secondary">Jumlah Mahasiswa</dt>
+                            <dt class="text-uniba-secondary">{{ __('about.student_total') }}</dt>
                             <dd class="font-semibold text-uniba-text">{{ $tenant->student ?? 0 }}</dd>
                         </div>
                         <div>
-                            <dt class="text-uniba-secondary">Email</dt>
-                            <dd class="font-semibold text-uniba-text">{{ $tenant->email ?? '—' }}</dd>
+                            <dt class="text-uniba-secondary">{{ __('about.email') }}</dt>
+                            <dd class="font-semibold text-uniba-text">
+                                {{ $tenant->email ?? __('common.placeholders.not_available') }}</dd>
                         </div>
                     </dl>
 
                     <div class="mt-6">
-                        <x-public.button variant="outline" :href="route('public.contact')" class="w-full justify-center">
-                            Hubungi Kami
+                        <x-public.button variant="outline" :href="localized_route('public.contact')" class="w-full justify-center">
+                            {{ __('about.contact_button') }}
                         </x-public.button>
                     </div>
                 </x-public.card>
@@ -72,7 +84,8 @@
 
             <div class="mt-8 space-y-6">
                 <x-public.card class="p-6">
-                    <div class="text-xs font-semibold uppercase tracking-[0.14em] text-uniba-gold">Visi</div>
+                    <div class="text-xs font-semibold uppercase tracking-[0.14em] text-uniba-gold">
+                        {{ __('about.vision_label') }}</div>
                     <div class="prose prose-sm mt-3 max-w-none text-uniba-text-secondary">
                         {!! $visionHtml !!}
                     </div>
@@ -80,14 +93,16 @@
 
                 <div class="grid gap-6 lg:grid-cols-2">
                     <x-public.card class="p-6">
-                        <div class="text-xs font-semibold uppercase tracking-[0.14em] text-uniba-primary-blue">Misi</div>
+                        <div class="text-xs font-semibold uppercase tracking-[0.14em] text-uniba-primary-blue">
+                            {{ __('about.mission_label') }}</div>
                         <div class="richtext-list prose prose-sm mt-3 max-w-none text-uniba-text-secondary">
                             {!! $missionHtml !!}
                         </div>
                     </x-public.card>
 
                     <x-public.card class="p-6">
-                        <div class="text-xs font-semibold uppercase tracking-[0.14em] text-uniba-primary-blue">Tujuan</div>
+                        <div class="text-xs font-semibold uppercase tracking-[0.14em] text-uniba-primary-blue">
+                            {{ __('about.objectives_label') }}</div>
                         <div class="richtext-list prose prose-sm mt-3 max-w-none text-uniba-text-secondary">
                             {!! $objectivesHtml !!}
                         </div>

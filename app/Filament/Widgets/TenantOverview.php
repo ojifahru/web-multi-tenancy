@@ -14,7 +14,7 @@ class TenantOverview extends TableWidget
     public function table(Table $table): Table
     {
         return $table
-            ->query(fn(): Builder => StudyProgram::query()->latest()->limit(5))
+            ->query(fn (): Builder => StudyProgram::query()->latest()->limit(5))
             ->columns([
                 TextColumn::make('name')
                     ->label('Nama Program Studi')

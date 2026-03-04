@@ -1,6 +1,6 @@
 @props(['title', 'subtitle' => null, 'breadcrumbs' => []])
 
-<div {{ $attributes->merge(['class' => 'mb-12']) }}>
+<div {{ $attributes->merge(['class' => 'mb-10']) }}>
     <nav aria-label="Breadcrumb" class="text-sm">
         <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-uniba-secondary">
             @foreach ($breadcrumbs as $index => $crumb)
@@ -38,7 +38,7 @@
 
     <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-            <h1 class="flex items-center gap-3 text-3xl font-light tracking-wide text-uniba-deep-blue sm:text-4xl">
+            <h1 class="flex items-center gap-3 text-3xl font-light leading-tight tracking-tight text-uniba-deep-blue sm:text-4xl">
                 @isset($icon)
                     {{ $icon }}
                 @endisset
@@ -48,7 +48,7 @@
             <div class="mt-4 h-0.5 w-16 rounded bg-uniba-gold"></div>
 
             @if (!empty($subtitle))
-                <p class="mt-4 max-w-3xl text-sm leading-relaxed text-uniba-secondary">{{ $subtitle }}</p>
+                <p class="mt-4 max-w-3xl text-base leading-relaxed text-uniba-secondary">{{ $subtitle }}</p>
             @endif
         </div>
 

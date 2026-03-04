@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesLocalizedTranslations;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\User;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Translatable\HasTranslations;
 
 class StudyProgram extends Model implements HasMedia
 {
-    use SoftDeletes, InteractsWithMedia, LogsActivity;
+    use HasTranslations, InteractsWithMedia, LogsActivity, ResolvesLocalizedTranslations, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -45,8 +46,29 @@ class StudyProgram extends Model implements HasMedia
         'facebook_link',
         'instagram_link',
         'twitter_link',
-        'linkedin_link'
+        'linkedin_link',
     ];
+
+    public array $translatable = ['name', 'description', 'faculty', 'degree_level', 'accreditation', 'vision', 'mission', 'about', 'objectives', 'meta_title', 'meta_description', 'meta_keywords'];
+
+    protected function casts(): array
+    {
+        return [
+            'name' => 'array',
+            'description' => 'array',
+            'faculty' => 'array',
+            'degree_level' => 'array',
+            'accreditation' => 'array',
+            'vision' => 'array',
+            'mission' => 'array',
+            'about' => 'array',
+            'objectives' => 'array',
+            'meta_title' => 'array',
+            'meta_description' => 'array',
+            'meta_keywords' => 'array',
+            'is_active' => 'boolean',
+        ];
+    }
 
     /**
      * The users that belong to the study program.
@@ -94,7 +116,7 @@ class StudyProgram extends Model implements HasMedia
                     'created' => "Program Studi {$name} dibuat",
                     'updated' => "Program Studi {$name} diperbarui",
                     'deleted' => "Program Studi {$name} dihapus",
-                    default   => $eventName,
+                    default => $eventName,
                 };
             });
     }

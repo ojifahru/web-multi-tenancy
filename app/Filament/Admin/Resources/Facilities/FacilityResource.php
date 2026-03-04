@@ -15,17 +15,25 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 use UnitEnum;
 
 class FacilityResource extends Resource
 {
+    use Translatable;
+
     protected static ?string $model = Facility::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingLibrary;
+
     protected static string|UnitEnum|null $navigationGroup = 'Manajemen Data';
+
     protected static ?int $navigationSort = 8;
+
     protected static ?string $navigationLabel = 'Fasilitas';
+
     protected static ?string $pluralModelLabel = 'Fasilitas';
+
     protected static ?string $modelLabel = 'Fasilitas';
 
     protected static ?string $recordTitleAttribute = 'name';

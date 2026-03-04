@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('study_program_id')
                 ->constrained()
                 ->cascadeOnDelete();
-            $table->string('name');
-            $table->string('slug');
+            $table->json('name');
+            $table->json('slug');
 
             $table->timestamps();
             $table->softDeletes();

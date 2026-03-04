@@ -38,7 +38,7 @@ class PublicContentSanitizer
         $document = new DOMDocument('1.0', 'UTF-8');
         $previousErrors = libxml_use_internal_errors(true);
         $loaded = $document->loadHTML(
-            '<?xml encoding="utf-8" ?><div>' . $html . '</div>',
+            '<?xml encoding="utf-8" ?><div>'.$html.'</div>',
             LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD,
         );
         libxml_clear_errors();

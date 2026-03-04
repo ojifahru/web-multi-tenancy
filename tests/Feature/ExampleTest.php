@@ -5,7 +5,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-test('the application returns a successful response', function () {
+test('the application redirects root path to default locale', function () {
     StudyProgram::withoutEvents(function (): void {
         StudyProgram::query()->create([
             'name' => 'Test Program',
@@ -19,5 +19,5 @@ test('the application returns a successful response', function () {
         ->withServerVariables(['HTTP_HOST' => 'localhost'])
         ->get('/');
 
-    $response->assertOk();
+    $response->assertRedirect('/id');
 });

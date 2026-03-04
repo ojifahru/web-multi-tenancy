@@ -7,5 +7,5 @@ return [
     'dosen' => 'Dosen',
     'fasilitas' => 'Fasilitas',
     'kontak' => 'Kontak',
-    'hubungi' => 'Hubungi Kami'
+    'hubungi' => 'Hubungi Kami',
 ];

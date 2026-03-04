@@ -14,7 +14,6 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -45,14 +44,14 @@ class UsersRelationManager extends RelationManager
                 TextInput::make('password')
                     ->password()
                     ->revealable()
-                    ->required(fn(string $operation): bool => $operation === 'create')
-                    ->dehydrated(fn(?string $state): bool => filled($state))
+                    ->required(fn (string $operation): bool => $operation === 'create')
+                    ->dehydrated(fn (?string $state): bool => filled($state))
                     ->minLength(8),
                 TextInput::make('password_confirmation')
                     ->password()
                     ->revealable()
                     ->label('Confirm Password')
-                    ->required(fn(string $operation): bool => $operation === 'create')
+                    ->required(fn (string $operation): bool => $operation === 'create')
                     ->dehydrated(false)
                     ->same('password'),
                 Select::make('roles')
@@ -60,7 +59,7 @@ class UsersRelationManager extends RelationManager
                     ->relationship('roles', 'name')
                     ->preload()
                     ->searchable(),
-                0.
+                0.,
             ]);
     }
 
@@ -112,7 +111,7 @@ class UsersRelationManager extends RelationManager
                     // RestoreBulkAction::make(),
                 ]),
             ])
-            ->modifyQueryUsing(fn(Builder $query) => $query
+            ->modifyQueryUsing(fn (Builder $query) => $query
                 ->withoutGlobalScopes([
                     SoftDeletingScope::class,
                 ]));

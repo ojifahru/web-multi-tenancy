@@ -2,16 +2,29 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesLocalizedTranslations;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Translatable\HasTranslations;
 
 class Tag extends Model
 {
-    use LogsActivity;
+    use HasTranslations, LogsActivity, ResolvesLocalizedTranslations, SoftDeletes;
 
-    protected $fillable = ['name', 'slug'];
+    protected $fillable = ['study_program_id', 'name', 'slug'];
+
+    public array $translatable = ['name', 'slug'];
+
+    protected function casts(): array
+    {
+        return [
+            'name' => 'array',
+            'slug' => 'array',
+        ];
+    }
 
     public function studyProgram()
     {
@@ -37,7 +50,7 @@ class Tag extends Model
                     'created' => "Tag {$name} dibuat",
                     'updated' => "Tag {$name} diperbarui",
                     'deleted' => "Tag {$name} dihapus",
-                    default   => $eventName,
+                    default => $eventName,
                 };
             });
     }

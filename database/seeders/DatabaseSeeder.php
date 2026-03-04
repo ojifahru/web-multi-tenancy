@@ -3,9 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Database\Seeders\FacilitySeeder;
-use Database\Seeders\LecturerSeeder;
-use Database\Seeders\NewsSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;

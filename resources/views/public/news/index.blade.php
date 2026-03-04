@@ -1,7 +1,7 @@
-<x-public.layout :tenant="$tenant" title="Berita">
+<x-public.layout :tenant="$tenant" :title="__('news.title')">
     <section class="bg-uniba-surface-1 py-20 sm:py-24">
         <x-public.container class="max-w-6xl">
-            <x-public.page-header title="Berita" subtitle="Kumpulan informasi dan pengumuman terbaru." :breadcrumbs="[['label' => 'Home', 'href' => route('public.home')], ['label' => 'Berita']]">
+            <x-public.page-header :title="__('news.title')" :subtitle="__('news.subtitle')" :breadcrumbs="[['label' => __('menu.beranda'), 'href' => localized_route('public.home')], ['label' => __('news.title')]]">
                 <x-slot:icon>
                     <svg class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fill-rule="evenodd"
@@ -11,22 +11,22 @@
                 </x-slot:icon>
             </x-public.page-header>
 
-            <form action="{{ route('public.news.index') }}" method="GET"
+            <form action="{{ localized_route('public.news.index') }}" method="GET"
                 class="mb-10 flex flex-col gap-3 rounded-xl border border-uniba-border bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
                 <label for="q" class="text-xs font-semibold uppercase tracking-[0.12em] text-uniba-primary-blue">
-                    Cari Berita
+                    {{ __('news.search_label') }}
                 </label>
-                <div class="flex w-full gap-2 sm:w-auto sm:min-w-[24rem]">
+                <div class="flex w-full gap-2 sm:w-auto sm:min-w-[20rem]">
                     <input id="q" name="q" type="search" value="{{ $search ?? '' }}"
-                        placeholder="Judul atau kata kunci..."
+                        placeholder="{{ __('news.search_placeholder') }}"
                         class="w-full rounded-lg border border-uniba-border bg-white px-3 py-2 text-sm text-uniba-text placeholder:text-uniba-text-secondary focus:border-uniba-primary-blue focus:outline-none focus:ring-2 focus:ring-uniba-primary-blue/20">
-                    <x-public.button type="submit" size="sm">Cari</x-public.button>
+                    <x-public.button type="submit" size="sm">{{ __('common.actions.search') }}</x-public.button>
                 </div>
             </form>
 
             @if ($news->isEmpty())
-                <x-public.empty-state title="Belum ada berita"
-                    description="Berita akan muncul ketika sudah dipublikasikan." />
+                <x-public.empty-state title="{{ __('news.empty_title') }}"
+                    description="{{ __('news.empty_description') }}" />
             @else
                 <div class="grid gap-8 md:grid-cols-3">
                     @foreach ($news as $item)

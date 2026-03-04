@@ -15,17 +15,25 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 use UnitEnum;
 
 class NewsResource extends Resource
 {
+    use Translatable;
+
     protected static ?string $model = News::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
+
     protected static string|UnitEnum|null $navigationGroup = 'Manajemen Konten';
+
     protected static ?string $navigationLabel = 'Berita';
+
     protected static ?string $pluralModelLabel = 'Berita';
+
     protected static ?string $modelLabel = 'Berita';
+
     protected static ?int $navigationSort = 3;
 
     protected static ?string $recordTitleAttribute = 'title';

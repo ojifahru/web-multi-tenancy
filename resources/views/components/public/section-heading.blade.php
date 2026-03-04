@@ -2,11 +2,11 @@
 
 <div class="flex flex-wrap items-end justify-between gap-5">
     <div>
-        <h2 class="text-2xl font-light tracking-wide text-uniba-deep-blue sm:text-3xl">{{ $title }}</h2>
+        <h2 class="text-2xl font-light leading-tight tracking-tight text-uniba-deep-blue sm:text-3xl">{{ $title }}</h2>
         <div class="mt-2 h-0.5 w-16 rounded bg-uniba-gold"></div>
 
         @if (!empty($subtitle))
-            <p class="mt-4 max-w-2xl text-sm leading-relaxed text-uniba-text-secondary">{{ $subtitle }}</p>
+            <p class="mt-4 max-w-3xl text-sm leading-relaxed text-uniba-text-secondary">{{ $subtitle }}</p>
         @endif
     </div>
 

@@ -2,20 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\ResolvesLocalizedTranslations;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Translatable\HasTranslations;
 
 class Lecturer extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia, LogsActivity;
+    use HasFactory, HasTranslations, InteractsWithMedia, LogsActivity, ResolvesLocalizedTranslations, SoftDeletes;
+
     protected $fillable = [
         'study_program_id',
         'nidn',
@@ -26,6 +29,16 @@ class Lecturer extends Model implements HasMedia
         'biography',
         'is_active',
     ];
+
+    public array $translatable = ['biography'];
+
+    protected function casts(): array
+    {
+        return [
+            'biography' => 'array',
+            'is_active' => 'boolean',
+        ];
+    }
 
     public function studyProgram()
     {
@@ -62,12 +75,12 @@ class Lecturer extends Model implements HasMedia
                     'created' => "Dosen {$name} dibuat",
                     'updated' => "Dosen {$name} diperbarui",
                     'deleted' => "Dosen {$name} dihapus",
-                    default   => $eventName,
+                    default => $eventName,
                 };
             });
     }
 
-    public function tapActivity(Activity $activity, string $eventName)
+    public function tapActivity(Activity $activity, string $eventName): void
     {
         $activity->study_program_id = filament()->getTenant()?->id;
     }

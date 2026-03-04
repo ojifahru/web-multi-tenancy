@@ -3,8 +3,8 @@
 namespace App\Filament\Admin\Resources\ContactMessages\Tables;
 
 use Filament\Actions\ViewAction;
-use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 

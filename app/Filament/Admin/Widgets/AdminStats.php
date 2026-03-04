@@ -4,23 +4,22 @@ namespace App\Filament\Admin\Widgets;
 
 use App\Filament\Admin\Resources\Categories\CategoryResource;
 use App\Filament\Admin\Resources\Facilities\FacilityResource;
-use App\Models\Category;
-use App\Models\Tag;
-use App\Models\Facility;
-use Filament\Widgets\StatsOverviewWidget;
-use Filament\Widgets\StatsOverviewWidget\Stat;
-use Filament\Facades\Filament;
-use App\Models\News;
 use App\Filament\Admin\Resources\News\NewsResource;
 use App\Filament\Admin\Resources\Tags\TagResource;
-
-
+use App\Models\Category;
+use App\Models\Facility;
+use App\Models\News;
+use App\Models\Tag;
+use Filament\Facades\Filament;
+use Filament\Widgets\StatsOverviewWidget;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class AdminStats extends StatsOverviewWidget
 {
     protected function getStats(): array
     {
         $tenant = Filament::getTenant();
+
         return [
             Stat::make('Total Berita', News::where('study_program_id', $tenant->id)->count())
                 ->description('Jumlah berita yang telah dipublikasikan.')

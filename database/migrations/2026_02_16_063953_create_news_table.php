@@ -18,10 +18,10 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->string('title');
-            $table->string('slug');
-            $table->text('excerpt')->nullable();
-            $table->longText('content');
+            $table->json('title');
+            $table->json('slug');
+            $table->json('excerpt')->nullable();
+            $table->json('content');
 
             $table->foreignId('author_id')
                 ->nullable()
@@ -33,9 +33,7 @@ return new class extends Migration
                 ->constrained()
                 ->nullOnDelete();
 
-            $table->string('image_path')->nullable();
-
-            $table->dateTime('published_at')->nullable();
+            $table->dateTime('published_at')->default(now())->nullable();
 
             $table->enum('status', ['draft', 'published', 'archived'])
                 ->default('draft')

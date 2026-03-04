@@ -44,7 +44,7 @@ class ActivitiesTable
                     ->placeholder('-'),
                 TextColumn::make('subject_type')
                     ->label('Subjek')
-                    ->formatStateUsing(fn(?string $state): string => $state ? class_basename($state) : '-')
+                    ->formatStateUsing(fn (?string $state): string => $state ? class_basename($state) : '-')
                     ->toggleable(),
                 TextColumn::make('created_at')
                     ->label('Waktu')
@@ -54,14 +54,14 @@ class ActivitiesTable
             ->filters([
                 SelectFilter::make('log_name')
                     ->label('Log Name')
-                    ->options(fn(): array => Activity::query()
+                    ->options(fn (): array => Activity::query()
                         ->whereNotNull('log_name')
                         ->distinct('log_name')
                         ->orderBy('log_name')
                         ->pluck('log_name', 'log_name')
                         ->all()),
                 SelectFilter::make('event')
-                    ->options(fn(): array => Activity::query()
+                    ->options(fn (): array => Activity::query()
                         ->whereNotNull('event')
                         ->distinct('event')
                         ->orderBy('event')

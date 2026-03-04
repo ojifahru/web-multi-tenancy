@@ -1,0 +1,38 @@
+<?php
+
+return [
+    'labels' => [
+        'home' => 'Beranda',
+        'about' => 'Tentang Kami',
+        'news' => 'Berita',
+        'lecturers' => 'Dosen',
+        'facilities' => 'Fasilitas',
+        'contact' => 'Kontak',
+        'contact_us' => 'Hubungi Kami',
+        'search' => 'Cari',
+        'read_more' => 'Baca Selengkapnya',
+        'back' => 'Kembali',
+        'send' => 'Kirim',
+        'submit' => 'Kirim',
+        'cancel' => 'Batal',
+        'delete' => 'Hapus',
+        'edit' => 'Edit',
+        'save' => 'Simpan',
+        'loading' => 'Memuat...',
+        'no_data' => 'Tidak ada data',
+        'language' => 'Bahasa',
+        'english' => 'English',
+        'indonesian' => 'Bahasa Indonesia',
+    ],
+    'messages' => [
+        'welcome' => 'Selamat Datang',
+        'thank_you' => 'Terima Kasih',
+        'success' => 'Berhasil',
+        'error' => 'Kesalahan',
+        'not_found' => 'Tidak Ditemukan',
+        'page_not_found' => 'Halaman tidak ditemukan',
+        'unauthorized' => 'Tidak Sah',
+        'forbidden' => 'Dilarang',
+        'something_wrong' => 'Sesuatu yang salah terjadi',
+    ],
+];

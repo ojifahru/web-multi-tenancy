@@ -30,7 +30,8 @@ class FacilitiesTable
                 TextColumn::make('description')
                     ->searchable()
                     ->limit(50)
-                    ->wrap(),
+                    ->wrap()
+                    ->html(),
             ])
             ->filters([
                 TrashedFilter::make(),

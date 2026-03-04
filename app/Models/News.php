@@ -2,20 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\ResolvesLocalizedTranslations;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\Translatable\HasTranslations;
 
 class News extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia, LogsActivity;
+    use HasFactory, HasTranslations, InteractsWithMedia, LogsActivity, ResolvesLocalizedTranslations, SoftDeletes;
 
     protected $fillable = [
         'study_program_id',
@@ -30,9 +32,15 @@ class News extends Model implements HasMedia
         'is_featured',
     ];
 
+    public array $translatable = ['title', 'slug', 'excerpt', 'content'];
+
     protected function casts(): array
     {
         return [
+            'title' => 'array',
+            'slug' => 'array',
+            'excerpt' => 'array',
+            'content' => 'array',
             'published_at' => 'datetime',
             'is_featured' => 'boolean',
         ];
@@ -89,7 +97,7 @@ class News extends Model implements HasMedia
                     'created' => "Berita {$name} dibuat",
                     'updated' => "Berita {$name} diperbarui",
                     'deleted' => "Berita {$name} dihapus",
-                    default   => $eventName,
+                    default => $eventName,
                 };
             });
     }

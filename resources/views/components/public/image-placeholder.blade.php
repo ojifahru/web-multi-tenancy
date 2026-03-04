@@ -1,5 +1,5 @@
 @props([
-    'label' => 'Gambar belum tersedia',
+    'label' => __('common.placeholders.image_unavailable'),
     'showLabel' => true,
     'iconClass' => 'h-8 w-8',
     'textClass' => 'text-[11px]',

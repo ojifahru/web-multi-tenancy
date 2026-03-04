@@ -13,19 +13,18 @@ return new class extends Migration
     {
         Schema::create('study_programs', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->json('name');
             $table->string('code')->unique();
             $table->string('domain')->unique();
-            $table->text('description')->nullable();
+            $table->json('description')->nullable();
             $table->boolean('is_active')->default(true);
 
             // ======================
             // Academic Metadata
             // ======================
-            $table->string('faculty')->nullable();
-            $table->string('degree_level', 20)->nullable();
-            $table->string('accreditation', 50)->nullable();
-            $table->string('accreditation_file_path')->nullable();
+            $table->json('faculty')->nullable();
+            $table->json('degree_level', 20)->nullable();
+            $table->json('accreditation', 50)->nullable();
             $table->year('established_year')->nullable();
 
             // ======================
@@ -42,14 +41,14 @@ return new class extends Migration
             // ======================
             // Vision & Mission
             // ======================
-            $table->text('vision')->nullable();
-            $table->text('mission')->nullable();
+            $table->json('vision')->nullable();
+            $table->json('mission')->nullable();
 
             // ======================
             // Website / Profile Content
             // ======================
-            $table->longText('about')->nullable();
-            $table->text('objectives')->nullable();
+            $table->json('about')->nullable();
+            $table->json('objectives')->nullable();
 
             // ======================
             // Social Media
@@ -63,9 +62,9 @@ return new class extends Migration
             // ======================
             // SEO Metadata
             // ======================
-            $table->string('meta_title')->nullable();
-            $table->text('meta_description')->nullable();
-            $table->string('meta_keywords')->nullable();
+            $table->json('meta_title')->nullable();
+            $table->json('meta_description')->nullable();
+            $table->json('meta_keywords')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

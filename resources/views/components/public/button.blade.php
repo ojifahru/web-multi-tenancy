@@ -7,7 +7,7 @@
 
 @php
     $base =
-        'inline-flex items-center justify-center rounded-xl font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-uniba-gold focus:ring-offset-2 focus:ring-offset-uniba-bg hover:-translate-y-0.5 active:translate-y-0';
+        'inline-flex items-center justify-center rounded-xl font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-uniba-gold focus-visible:ring-offset-2 focus-visible:ring-offset-uniba-bg hover:-translate-y-0.5 active:translate-y-0 disabled:pointer-events-none disabled:opacity-60';
 
     $sizes = [
         'sm' => 'px-3 py-1.5 text-sm',

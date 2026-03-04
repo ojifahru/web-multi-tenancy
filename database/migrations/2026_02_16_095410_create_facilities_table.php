@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::create('facilities', function (Blueprint $table) {
             $table->id();
             $table->foreignId('study_program_id')->constrained()->onDelete('cascade');
-            $table->string('name');
-            $table->string('slug');
-            $table->string('image_path')->nullable();
-            $table->text('description')->nullable();
+            $table->json('name');
+            $table->json('slug');
+            $table->json('description')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

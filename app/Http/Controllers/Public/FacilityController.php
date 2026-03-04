@@ -25,8 +25,8 @@ class FacilityController extends Controller
             ->when($search !== '', function ($query) use ($search): void {
                 $query->where(function ($facilityQuery) use ($search): void {
                     $facilityQuery
-                        ->where('name', 'like', '%' . $search . '%')
-                        ->orWhere('description', 'like', '%' . $search . '%');
+                        ->where('name', 'like', '%'.$search.'%')
+                        ->orWhere('description', 'like', '%'.$search.'%');
                 });
             })
             ->orderBy('name')
@@ -40,18 +40,37 @@ class FacilityController extends Controller
         ]);
     }
 
-    public function show(Request $request, string $slug): View
+    public function show(Request $request, string $locale, string $slug): View
     {
         /** @var StudyProgram|null $tenant */
         $tenant = $request->attributes->get('tenant');
 
         abort_unless($tenant instanceof StudyProgram, 404);
 
-        $facility = Facility::query()
+        $baseFacilityQuery = Facility::query()
             ->where('study_program_id', $tenant->id)
-            ->where('slug', $slug)
-            ->with('media')
-            ->firstOrFail();
+            ->with('media');
+
+        $normalizedSlug = trim(urldecode($slug));
+
+        $facility = (clone $baseFacilityQuery)
+            ->where(function ($query) use ($normalizedSlug): void {
+                $query
+                    ->where('slug', $normalizedSlug)
+                    ->orWhere('slug->id', $normalizedSlug)
+                    ->orWhere('slug->en', $normalizedSlug);
+            })
+            ->first();
+
+        if (! $facility && $normalizedSlug !== '') {
+            $facility = (clone $baseFacilityQuery)
+                ->get()
+                ->first(function (Facility $candidate) use ($normalizedSlug): bool {
+                    return $candidate->matchesSlug($normalizedSlug);
+                });
+        }
+
+        abort_if(! $facility, 404);
 
         $relatedFacilities = Facility::query()
             ->where('study_program_id', $tenant->id)

@@ -36,17 +36,17 @@ class StoreContactMessageRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Nama wajib diisi.',
-            'name.max' => 'Nama maksimal 120 karakter.',
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.max' => 'Email maksimal 255 karakter.',
-            'phone.max' => 'Nomor telepon maksimal 30 karakter.',
-            'subject.required' => 'Subjek wajib diisi.',
-            'subject.max' => 'Subjek maksimal 150 karakter.',
-            'message.required' => 'Pesan wajib diisi.',
-            'message.min' => 'Pesan minimal 10 karakter.',
-            'message.max' => 'Pesan maksimal 2000 karakter.',
+            'name.required' => __('contact.validation.name.required'),
+            'name.max' => __('contact.validation.name.max'),
+            'email.required' => __('contact.validation.email.required'),
+            'email.email' => __('contact.validation.email.email'),
+            'email.max' => __('contact.validation.email.max'),
+            'phone.max' => __('contact.validation.phone.max'),
+            'subject.required' => __('contact.validation.subject.required'),
+            'subject.max' => __('contact.validation.subject.max'),
+            'message.required' => __('contact.validation.message.required'),
+            'message.min' => __('contact.validation.message.min'),
+            'message.max' => __('contact.validation.message.max'),
         ];
     }
 
@@ -56,11 +56,11 @@ class StoreContactMessageRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name' => 'nama',
-            'email' => 'email',
-            'phone' => 'nomor telepon',
-            'subject' => 'subjek',
-            'message' => 'pesan',
+            'name' => __('contact.attributes.name'),
+            'email' => __('contact.attributes.email'),
+            'phone' => __('contact.attributes.phone'),
+            'subject' => __('contact.attributes.subject'),
+            'message' => __('contact.attributes.message'),
         ];
     }
 

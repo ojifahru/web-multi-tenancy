@@ -1,4 +1,9 @@
-<x-public.layout :tenant="$tenant" :title="$tenant->name">
+@php
+    $tenantName = $tenant->resolveLocalizedValue('name') ?? __('common.site.university_short');
+    $tenantDescription = $tenant->resolveLocalizedValue('description');
+@endphp
+
+<x-public.layout :tenant="$tenant" :title="$tenantName">
     @php
         $bannerUrl = $tenant->getFirstMediaUrl('study_program_banner');
 
@@ -14,30 +19,32 @@
     ═══════════════════════════════════════════════ --}}
     <section
         class="relative overflow-hidden bg-[linear-gradient(145deg,var(--color-uniba-surface-0)_0%,var(--color-uniba-surface-1)_52%,var(--color-uniba-surface-2)_100%)] py-16 sm:py-20">
-        <div class="pointer-events-none absolute -top-24 right-0 h-72 w-72 rounded-full bg-uniba-primary-blue/10 blur-3xl">
+        <div
+            class="pointer-events-none absolute -top-24 right-0 h-72 w-72 rounded-full bg-uniba-primary-blue/10 blur-3xl">
         </div>
         <div class="pointer-events-none absolute bottom-8 left-0 h-56 w-56 rounded-full bg-uniba-gold/15 blur-3xl"></div>
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="grid items-center gap-16 lg:grid-cols-2">
                 {{-- Left: Text --}}
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-uniba-primary-blue">Program Studi</p>
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-uniba-primary-blue">
+                        {{ __('home.hero.program_label') }}</p>
 
                     <h1
                         class="mt-5 text-4xl font-light leading-tight tracking-wide text-uniba-deep-blue sm:text-5xl lg:text-6xl">
-                        {{ $tenant->name }}
+                        {{ $tenantName }}
                     </h1>
 
                     <div class="mt-5 h-0.5 w-16 bg-uniba-gold"></div>
 
-                    <p class="mt-7 max-w-xl text-base leading-relaxed text-uniba-text-secondary">
-                        {{ $tenant->description ? \Illuminate\Support\Str::limit(strip_tags($tenant->description), 180) : 'Selamat datang di website resmi program studi kami. Temukan informasi lengkap tentang dosen, fasilitas, berita terbaru, dan berbagai kegiatan akademik yang kami tawarkan.' }}
+                    <p class="mt-7 max-w-2xl text-base leading-relaxed text-uniba-text-secondary">
+                        {{ $tenantDescription ? \Illuminate\Support\Str::limit(strip_tags($tenantDescription), 180) : __('home.hero.description_default') }}
                     </p>
 
                     <div class="mt-10 flex flex-wrap gap-4">
-                        <a href="{{ route('public.news.index') }}"
+                        <a href="{{ localized_route('public.news.index') }}"
                             class="inline-flex items-center gap-2 rounded-xl border border-uniba-primary-blue bg-uniba-primary-blue px-7 py-3 text-sm font-semibold tracking-wide text-white transition-all hover:bg-uniba-deep-blue focus:outline-none focus:ring-2 focus:ring-uniba-primary-blue/30">
-                            Lihat Berita
+                            {{ __('home.hero.cta_news') }}
                             <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                 <path fill-rule="evenodd"
                                     d="M3 10a.75.75 0 01.75-.75h10.19L9.47 4.78a.75.75 0 011.06-1.06l5.5 5.25a.75.75 0 010 1.06l-5.5 5.25a.75.75 0 11-1.06-1.06l4.47-4.47H3.75A.75.75 0 013 10z"
@@ -46,7 +53,7 @@
                         </a>
                         <a href="#tentang"
                             class="inline-flex items-center gap-2 rounded-xl border border-uniba-gold px-7 py-3 text-sm font-semibold tracking-wide text-uniba-deep-blue transition-all hover:bg-uniba-gold/10 focus:outline-none focus:ring-2 focus:ring-uniba-gold/30">
-                            Tentang Prodi
+                            {{ __('home.hero.cta_about') }}
                         </a>
                     </div>
                 </div>
@@ -54,12 +61,13 @@
                 {{-- Right: Banner image --}}
                 <div class="relative">
                     @if (!empty($bannerUrl))
-                        <img src="{{ $bannerUrl }}" alt="Banner {{ $tenant->name }}" width="1600" height="900"
+                        <img src="{{ $bannerUrl }}" alt="Banner {{ $tenantName }}" width="1600" height="900"
                             loading="eager" fetchpriority="high" decoding="async"
                             class="aspect-video w-full rounded-2xl border border-uniba-border object-cover shadow-sm">
                     @else
                         <x-public.image-placeholder class="aspect-video rounded-2xl border border-uniba-border"
-                            label="Banner program studi belum tersedia" iconClass="h-12 w-12" textClass="text-xs" />
+                            label="{{ __('home.hero.banner_placeholder') }}" iconClass="h-12 w-12"
+                            textClass="text-xs" />
                     @endif
                 </div>
             </div>
@@ -130,14 +138,15 @@
             {{-- Section label --}}
             <div class="flex items-center gap-4">
                 <div class="h-px flex-1 bg-uniba-primary-blue/15"></div>
-                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-uniba-primary-blue">Tentang Program
-                    Studi</p>
+                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-uniba-primary-blue">
+                    {{ __('home.about.section_label') }}</p>
                 <div class="h-px flex-1 bg-uniba-primary-blue/15"></div>
             </div>
 
             {{-- Visi - full width, prominent --}}
             <div class="mt-10 border-l-4 border-uniba-gold bg-uniba-surface-0 px-10 py-10 shadow-sm">
-                <p class="text-xs font-semibold uppercase tracking-widest text-uniba-gold">Visi</p>
+                <p class="text-xs font-semibold uppercase tracking-widest text-uniba-gold">
+                    {{ __('home.about.vision_label') }}</p>
                 <p class="mt-4 text-xl font-light leading-relaxed text-uniba-deep-blue sm:text-2xl">
                     {!! $visionHtml !!}
                 </p>
@@ -146,14 +155,16 @@
             {{-- Misi & Tujuan side by side --}}
             <div class="mt-8 grid gap-8 lg:grid-cols-2">
                 <div class="border border-uniba-primary-blue/10 bg-uniba-surface-0 px-8 py-8">
-                    <p class="text-xs font-semibold uppercase tracking-widest text-uniba-primary-blue">Misi</p>
+                    <p class="text-xs font-semibold uppercase tracking-widest text-uniba-primary-blue">
+                        {{ __('home.about.mission_label') }}</p>
                     <div class="richtext-list prose prose-sm mt-5 max-w-none text-uniba-text-secondary">
                         {!! $missionHtml !!}
                     </div>
                 </div>
 
                 <div class="border border-uniba-primary-blue/10 bg-uniba-surface-0 px-8 py-8">
-                    <p class="text-xs font-semibold uppercase tracking-widest text-uniba-primary-blue">Tujuan</p>
+                    <p class="text-xs font-semibold uppercase tracking-widest text-uniba-primary-blue">
+                        {{ __('home.about.objectives_label') }}</p>
                     <div class="richtext-list prose prose-sm mt-5 max-w-none text-uniba-text-secondary">
                         {!! $objectivesHtml !!}
                     </div>
@@ -169,18 +180,20 @@
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="flex items-end justify-between gap-6 border-b border-uniba-primary-blue/10 pb-8">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-uniba-gold">Civitas Akademika</p>
-                    <h2 class="mt-2 text-2xl font-light tracking-tight text-uniba-deep-blue sm:text-3xl">Dosen</h2>
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-uniba-gold">
+                        {{ __('home.lecturers.kicker') }}</p>
+                    <h2 class="mt-2 text-2xl font-light tracking-tight text-uniba-deep-blue sm:text-3xl">
+                        {{ __('home.lecturers.title') }}</h2>
                 </div>
-                <a href="{{ route('public.lecturers.index') }}"
+                <a href="{{ localized_route('public.lecturers.index') }}"
                     class="shrink-0 rounded-md text-xs font-semibold uppercase tracking-widest text-uniba-primary-blue transition hover:text-uniba-deep-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-uniba-gold focus-visible:ring-offset-2 focus-visible:ring-offset-white">
-                    Lihat Semua &rarr;
+                    {{ __('home.lecturers.view_all') }}
                 </a>
             </div>
 
             @if (($lecturers ?? collect())->isEmpty())
-                <x-public.empty-state class="mt-10" title="Belum ada data dosen"
-                    description="Data dosen belum tersedia untuk program studi ini." />
+                <x-public.empty-state class="mt-10" title="{{ __('home.lecturers.empty_title') }}"
+                    description="{{ __('home.lecturers.empty_description') }}" />
             @else
                 <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     @foreach ($lecturers as $lecturer)
@@ -198,19 +211,21 @@
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="flex items-end justify-between gap-6 border-b border-uniba-primary-blue/10 pb-8">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-uniba-gold">Informasi Terkini</p>
-                    <h2 class="mt-2 text-2xl font-light tracking-tight text-uniba-deep-blue sm:text-3xl">Berita Terbaru
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-uniba-gold">
+                        {{ __('home.news.kicker') }}</p>
+                    <h2 class="mt-2 text-2xl font-light tracking-tight text-uniba-deep-blue sm:text-3xl">
+                        {{ __('home.news.title') }}
                     </h2>
                 </div>
-                <a href="{{ route('public.news.index') }}"
+                <a href="{{ localized_route('public.news.index') }}"
                     class="shrink-0 rounded-md text-xs font-semibold uppercase tracking-widest text-uniba-primary-blue transition hover:text-uniba-deep-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-uniba-gold focus-visible:ring-offset-2 focus-visible:ring-offset-uniba-bg">
-                    Semua Berita &rarr;
+                    {{ __('home.news.view_all') }}
                 </a>
             </div>
 
             @if ($latestNews->isEmpty())
-                <x-public.empty-state class="mt-10" title="Belum ada berita"
-                    description="Berita akan ditampilkan ketika sudah dipublikasikan." />
+                <x-public.empty-state class="mt-10" title="{{ __('home.news.empty_title') }}"
+                    description="{{ __('home.news.empty_description') }}" />
             @else
                 <div class="mt-10 grid gap-8 md:grid-cols-3">
                     @foreach ($latestNews as $news)
@@ -228,18 +243,20 @@
         <div class="mx-auto max-w-7xl px-6 lg:px-8">
             <div class="flex items-end justify-between gap-6 border-b border-uniba-primary-blue/10 pb-8">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-uniba-gold">Sarana & Prasarana</p>
-                    <h2 class="mt-2 text-2xl font-light tracking-tight text-uniba-deep-blue sm:text-3xl">Fasilitas</h2>
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-uniba-gold">
+                        {{ __('home.facilities.kicker') }}</p>
+                    <h2 class="mt-2 text-2xl font-light tracking-tight text-uniba-deep-blue sm:text-3xl">
+                        {{ __('home.facilities.title') }}</h2>
                 </div>
-                <a href="{{ route('public.facilities.index') }}"
+                <a href="{{ localized_route('public.facilities.index') }}"
                     class="shrink-0 rounded-md text-xs font-semibold uppercase tracking-widest text-uniba-primary-blue transition hover:text-uniba-deep-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-uniba-gold focus-visible:ring-offset-2 focus-visible:ring-offset-white">
-                    Lihat Semua &rarr;
+                    {{ __('home.facilities.view_all') }}
                 </a>
             </div>
 
             @if (($facilities ?? collect())->isEmpty())
-                <x-public.empty-state class="mt-10" title="Belum ada fasilitas"
-                    description="Data fasilitas belum tersedia untuk program studi ini." />
+                <x-public.empty-state class="mt-10" title="{{ __('home.facilities.empty_title') }}"
+                    description="{{ __('home.facilities.empty_description') }}" />
             @else
                 <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     @foreach ($facilities as $facility)
@@ -253,20 +270,22 @@
     {{-- ═══════════════════════════════════════════════
          CTA BAND
     ═══════════════════════════════════════════════ --}}
-    <section class="bg-[linear-gradient(135deg,var(--color-uniba-deep-blue)_0%,var(--color-uniba-primary-blue)_58%,var(--color-uniba-deep-blue)_100%)]">
+    <section
+        class="bg-[linear-gradient(135deg,var(--color-uniba-deep-blue)_0%,var(--color-uniba-primary-blue)_58%,var(--color-uniba-deep-blue)_100%)]">
         <div class="mx-auto max-w-7xl px-6 py-14 lg:px-8 lg:py-16">
             <div class="flex flex-col items-start gap-8 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-uniba-gold">Informasi Lebih Lanjut
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-uniba-gold">
+                        {{ __('home.cta.kicker') }}
                     </p>
                     <h2 class="mt-3 text-2xl font-light tracking-tight text-white sm:text-3xl">
-                        Ingin tahu lebih lanjut?
+                        {{ __('home.cta.title') }}
                     </h2>
-                    <p class="mt-2 text-sm text-white/60">Hubungi kami untuk informasi pendaftaran dan akademik.</p>
+                    <p class="mt-2 text-sm text-white/60">{{ __('home.cta.description') }}</p>
                 </div>
-                <a href="{{ route('public.contact') }}"
+                <a href="{{ localized_route('public.contact') }}"
                     class="shrink-0 inline-flex items-center gap-2 rounded-xl border border-uniba-gold bg-uniba-gold px-8 py-3.5 text-sm font-semibold tracking-wide text-uniba-deep-blue transition-all hover:bg-uniba-soft-gold focus:outline-none focus:ring-2 focus:ring-uniba-gold focus:ring-offset-2 focus:ring-offset-uniba-deep-blue">
-                    Hubungi Kami
+                    {{ __('home.cta.button') }}
                     <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fill-rule="evenodd"
                             d="M3 10a.75.75 0 01.75-.75h10.19L9.47 4.78a.75.75 0 011.06-1.06l5.5 5.25a.75.75 0 010 1.06l-5.5 5.25a.75.75 0 11-1.06-1.06l4.47-4.47H3.75A.75.75 0 013 10z"

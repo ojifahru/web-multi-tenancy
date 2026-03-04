@@ -9,23 +9,31 @@ use App\Filament\Admin\Resources\Lecturers\Schemas\LecturerForm;
 use App\Filament\Admin\Resources\Lecturers\Tables\LecturersTable;
 use App\Models\Lecturer;
 use BackedEnum;
-use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
+use UnitEnum;
 
 class LecturerResource extends Resource
 {
+    use Translatable;
+
     protected static ?string $model = Lecturer::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUser;
+
     protected static string|UnitEnum|null $navigationGroup = 'Manajemen Data';
+
     protected static ?int $navigationSort = 9;
+
     protected static ?string $navigationLabel = 'Dosen';
+
     protected static ?string $pluralModelLabel = 'Dosen';
+
     protected static ?string $modelLabel = 'Dosen';
 
     protected static ?string $recordTitleAttribute = 'name';

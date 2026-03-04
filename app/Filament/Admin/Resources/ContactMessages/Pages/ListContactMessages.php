@@ -25,22 +25,23 @@ class ListContactMessages extends ListRecords
         return [
             'all' => Tab::make('Semua Pesan')
                 ->icon('heroicon-o-inbox')
-                ->modifyQueryUsing(fn(Builder $query) => $query)
+                ->modifyQueryUsing(fn (Builder $query) => $query)
                 ->badge(ContactMessage::query()->count())
                 ->badgeColor('primary'),
             'unread' => Tab::make('Belum Dibaca')
                 ->icon('heroicon-o-envelope')
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('is_read', false))
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('is_read', false))
                 ->badge(ContactMessage::query()->where('is_read', false)->count())
                 ->badgeColor('danger'),
             'read' => Tab::make('Sudah Dibaca')
                 ->icon('heroicon-o-envelope-open')
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('is_read', true))
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('is_read', true))
                 ->badge(ContactMessage::query()->where('is_read', true)->count())
                 ->badgeColor('success'),
         ];
     }
-    public function getDefaultActiveTab(): string | int | null
+
+    public function getDefaultActiveTab(): string|int|null
     {
         return 'unread';
     }

@@ -1,7 +1,7 @@
-<x-public.layout :tenant="$tenant" title="Dosen">
+<x-public.layout :tenant="$tenant" :title="__('lecturers.title')">
     <section class="bg-uniba-surface-1 py-20 sm:py-24">
         <x-public.container class="max-w-6xl">
-            <x-public.page-header title="Dosen" subtitle="Daftar dosen untuk program studi ini." :breadcrumbs="[['label' => 'Home', 'href' => route('public.home')], ['label' => 'Dosen']]">
+            <x-public.page-header :title="__('lecturers.title')" :subtitle="__('lecturers.subtitle')" :breadcrumbs="[['label' => __('menu.beranda'), 'href' => localized_route('public.home')], ['label' => __('lecturers.title')]]">
                 <x-slot:icon>
                     <svg class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path
@@ -12,35 +12,35 @@
                 </x-slot:icon>
 
                 <x-slot:actions>
-                    <x-public.button variant="outline" :href="route('public.home')">
+                    <x-public.button variant="outline" :href="localized_route('public.home')">
                         <span class="inline-flex items-center gap-2">
                             <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                 <path fill-rule="evenodd"
                                     d="M17 10a1 1 0 01-1 1H6.414l3.293 3.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 1.414L6.414 9H16a1 1 0 011 1z"
                                     clip-rule="evenodd" />
                             </svg>
-                            Kembali
+                            {{ __('common.actions.back') }}
                         </span>
                     </x-public.button>
                 </x-slot:actions>
             </x-public.page-header>
 
-            <form action="{{ route('public.lecturers.index') }}" method="GET"
+            <form action="{{ localized_route('public.lecturers.index') }}" method="GET"
                 class="mb-10 flex flex-col gap-3 rounded-xl border border-uniba-border bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
                 <label for="q" class="text-xs font-semibold uppercase tracking-[0.12em] text-uniba-primary-blue">
-                    Cari Dosen
+                    {{ __('lecturers.search_label') }}
                 </label>
-                <div class="flex w-full gap-2 sm:w-auto sm:min-w-[24rem]">
+                <div class="flex w-full gap-2 sm:w-auto sm:min-w-[20rem]">
                     <input id="q" name="q" type="search" value="{{ $search ?? '' }}"
-                        placeholder="Nama, NIDN, atau email..."
+                        placeholder="{{ __('lecturers.search_placeholder') }}"
                         class="w-full rounded-lg border border-uniba-border bg-white px-3 py-2 text-sm text-uniba-text placeholder:text-uniba-text-secondary focus:border-uniba-primary-blue focus:outline-none focus:ring-2 focus:ring-uniba-primary-blue/20">
-                    <x-public.button type="submit" size="sm">Cari</x-public.button>
+                    <x-public.button type="submit" size="sm">{{ __('common.actions.search') }}</x-public.button>
                 </div>
             </form>
 
             @if ($lecturers->isEmpty())
-                <x-public.empty-state class="mt-6" title="Belum ada data dosen"
-                    description="Data dosen belum tersedia untuk program studi ini." />
+                <x-public.empty-state class="mt-6" title="{{ __('lecturers.empty_title') }}"
+                    description="{{ __('lecturers.empty_description') }}" />
             @else
                 <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     @foreach ($lecturers as $lecturer)

@@ -2,21 +2,24 @@
 
 namespace App\Models;
 
-use App\Models\StudyProgram;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\ResolvesLocalizedTranslations;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\Translatable\HasTranslations;
 
 class Facility extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia, LogsActivity;
+    use HasFactory, HasTranslations, InteractsWithMedia, LogsActivity, ResolvesLocalizedTranslations, SoftDeletes;
+
+    public array $translatable = ['name', 'slug', 'description'];
 
     protected $fillable = [
         'study_program_id',
@@ -62,7 +65,7 @@ class Facility extends Model implements HasMedia
                     'created' => "Fasilitas {$name} dibuat",
                     'updated' => "Fasilitas {$name} diperbarui",
                     'deleted' => "Fasilitas {$name} dihapus",
-                    default   => $eventName,
+                    default => $eventName,
                 };
             });
     }
