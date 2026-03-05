@@ -26,35 +26,47 @@ class FacilityFactory extends Factory
      */
     public function definition(): array
     {
-        $name = fake()->randomElement([
-            'Perpustakaan Digital',
-            'Laboratorium Komputer',
-            'Smart Classroom',
-            'Ruang Diskusi Mahasiswa',
-            'Studio Multimedia',
-            'Auditorium Akademik',
-            'Pusat Riset',
-            'Co-Working Space',
-        ]).' '.fake()->numberBetween(1, 20);
+        $facilityName = fake()->randomElement([
+            ['id' => 'Perpustakaan Digital', 'en' => 'Digital Library'],
+            ['id' => 'Laboratorium Komputer', 'en' => 'Computer Laboratory'],
+            ['id' => 'Kelas Cerdas', 'en' => 'Smart Classroom'],
+            ['id' => 'Ruang Diskusi Mahasiswa', 'en' => 'Student Discussion Room'],
+            ['id' => 'Studio Multimedia', 'en' => 'Multimedia Studio'],
+            ['id' => 'Auditorium Akademik', 'en' => 'Academic Auditorium'],
+            ['id' => 'Pusat Riset', 'en' => 'Research Center'],
+            ['id' => 'Ruang Kerja Bersama', 'en' => 'Co-Working Space'],
+        ]);
+
+        $sequenceNumber = fake()->numberBetween(1, 20);
+        $slugSuffix = fake()->unique()->numberBetween(100, 999999);
+
+        $nameId = $facilityName['id'] . ' ' . $sequenceNumber;
+        $nameEn = $facilityName['en'] . ' ' . $sequenceNumber;
 
         return [
-            'study_program_id' => fn (): int => $this->resolveStudyProgramId(),
-            'name' => $name,
-            'slug' => Str::slug($name).'-'.fake()->unique()->numberBetween(100, 999999),
-            'description' => fake()->optional(0.85)->paragraphs(2, true),
+            'study_program_id' => fn(): int => $this->resolveStudyProgramId(),
+            'name' => [
+                'id' => $nameId,
+                'en' => $nameEn,
+            ],
+            'slug' => [
+                'id' => Str::slug($nameId) . '-' . $slugSuffix,
+                'en' => Str::slug($nameEn) . '-' . $slugSuffix,
+            ],
+            'description' => fake()->optional(0.85)->boolean() ? $this->descriptionTranslations() : null,
         ];
     }
 
     public function withDescription(): static
     {
-        return $this->state(fn (): array => [
-            'description' => fake()->paragraphs(2, true),
+        return $this->state(fn(): array => [
+            'description' => $this->descriptionTranslations(),
         ]);
     }
 
     public function withoutDescription(): static
     {
-        return $this->state(fn (): array => [
+        return $this->state(fn(): array => [
             'description' => null,
         ]);
     }
@@ -68,13 +80,27 @@ class FacilityFactory extends Factory
         }
 
         $studyProgram = StudyProgram::query()->create([
-            'name' => fake()->company().' Study Program',
+            'name' => [
+                'id' => 'Program Studi ' . fake()->company(),
+                'en' => fake()->company() . ' Study Program',
+            ],
             'code' => strtoupper(fake()->unique()->bothify('SP###')),
             'domain' => fake()->unique()->domainName(),
-            'description' => fake()->sentence(),
+            'description' => [
+                'id' => fake()->sentence(),
+                'en' => fake()->sentence(),
+            ],
             'is_active' => true,
         ]);
 
         return (int) $studyProgram->id;
+    }
+
+    private function descriptionTranslations(): array
+    {
+        return [
+            'id' => fake()->paragraphs(2, true),
+            'en' => fake()->paragraphs(2, true),
+        ];
     }
 }

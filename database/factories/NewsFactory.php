@@ -29,7 +29,9 @@ class NewsFactory extends Factory
      */
     public function definition(): array
     {
-        $title = fake()->sentence(6);
+        $titleId = fake()->sentence(6);
+        $titleEn = fake()->sentence(6);
+        $slugSuffix = fake()->unique()->numberBetween(1000, 999999);
         $status = fake()->randomElement(['draft', 'published', 'archived']);
 
         $publishedAt = match ($status) {
@@ -39,15 +41,25 @@ class NewsFactory extends Factory
         };
 
         return [
-            'study_program_id' => fn (): int => $this->resolveStudyProgramId(),
-            'title' => $title,
-            'slug' => Str::slug($title).'-'.fake()->unique()->numberBetween(1000, 999999),
-            'excerpt' => fake()->optional(0.9)->paragraph(),
-            'content' => collect(fake()->paragraphs(6))
-                ->map(fn (string $paragraph): string => '<p>'.e($paragraph).'</p>')
-                ->implode(PHP_EOL),
-            'author_id' => fn (): ?int => $this->resolveAuthorId(),
-            'category_id' => fn (array $attributes): ?int => $this->resolveCategoryId((int) $attributes['study_program_id']),
+            'study_program_id' => fn(): int => $this->resolveStudyProgramId(),
+            'title' => [
+                'id' => $titleId,
+                'en' => $titleEn,
+            ],
+            'slug' => [
+                'id' => Str::slug($titleId) . '-' . $slugSuffix,
+                'en' => Str::slug($titleEn) . '-' . $slugSuffix,
+            ],
+            'excerpt' => fake()->optional(0.9)->boolean() ? [
+                'id' => fake()->paragraph(),
+                'en' => fake()->paragraph(),
+            ] : null,
+            'content' => [
+                'id' => $this->contentParagraphsToHtml(fake()->paragraphs(6)),
+                'en' => $this->contentParagraphsToHtml(fake()->paragraphs(6)),
+            ],
+            'author_id' => fn(): ?int => $this->resolveAuthorId(),
+            'category_id' => fn(array $attributes): ?int => $this->resolveCategoryId((int) $attributes['study_program_id']),
             'published_at' => $publishedAt,
             'status' => $status,
             'is_featured' => fake()->boolean(20),
@@ -75,7 +87,7 @@ class NewsFactory extends Factory
 
     public function draft(): static
     {
-        return $this->state(fn (): array => [
+        return $this->state(fn(): array => [
             'status' => 'draft',
             'published_at' => null,
             'is_featured' => false,
@@ -84,7 +96,7 @@ class NewsFactory extends Factory
 
     public function published(): static
     {
-        return $this->state(fn (): array => [
+        return $this->state(fn(): array => [
             'status' => 'published',
             'published_at' => fake()->dateTimeBetween('-6 months', 'now'),
         ]);
@@ -92,7 +104,7 @@ class NewsFactory extends Factory
 
     public function archived(): static
     {
-        return $this->state(fn (): array => [
+        return $this->state(fn(): array => [
             'status' => 'archived',
             'published_at' => fake()->dateTimeBetween('-2 years', '-6 months'),
             'is_featured' => false,
@@ -101,7 +113,7 @@ class NewsFactory extends Factory
 
     public function featured(): static
     {
-        return $this->published()->state(fn (): array => [
+        return $this->published()->state(fn(): array => [
             'is_featured' => true,
         ]);
     }
@@ -115,10 +127,16 @@ class NewsFactory extends Factory
         }
 
         $studyProgram = StudyProgram::query()->create([
-            'name' => fake()->company().' Study Program',
+            'name' => [
+                'id' => 'Program Studi ' . fake()->company(),
+                'en' => fake()->company() . ' Study Program',
+            ],
             'code' => strtoupper(fake()->unique()->bothify('SP###')),
             'domain' => fake()->unique()->domainName(),
-            'description' => fake()->sentence(),
+            'description' => [
+                'id' => fake()->sentence(),
+                'en' => fake()->sentence(),
+            ],
             'is_active' => true,
         ]);
 
@@ -152,5 +170,12 @@ class NewsFactory extends Factory
             ->value('id');
 
         return $categoryId !== null ? (int) $categoryId : null;
+    }
+
+    private function contentParagraphsToHtml(array $paragraphs): string
+    {
+        return collect($paragraphs)
+            ->map(fn(string $paragraph): string => '<p>' . e($paragraph) . '</p>')
+            ->implode(PHP_EOL);
     }
 }

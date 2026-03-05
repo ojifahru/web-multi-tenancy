@@ -46,13 +46,13 @@ class NewsForm
                                     ->maxLength(255)
                                     ->columnSpanFull()
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
+                                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
 
                                 TextInput::make('slug')
                                     ->required()
                                     ->maxLength(255)
                                     ->alphaDash()
-                                    ->dehydrateStateUsing(fn (?string $state): ?string => filled($state) ? Str::slug($state) : null)
+                                    ->dehydrateStateUsing(fn(?string $state): ?string => filled($state) ? Str::slug($state) : null)
                                     ->columnSpanFull()
                                     ->helperText('Dibuat otomatis dari judul, tetap bisa diubah manual.'),
 
@@ -116,8 +116,8 @@ class NewsForm
                                         DateTimePicker::make('published_at')
                                             ->label('Tanggal Publikasi')
                                             ->seconds(false)
-                                            ->disabled(fn (Get $get): bool => $get('status') !== 'published')
-                                            ->required(fn (Get $get): bool => $get('status') === 'published')
+                                            ->disabled(fn(Get $get): bool => $get('status') !== 'published')
+                                            ->required(fn(Get $get): bool => $get('status') === 'published')
                                             ->helperText('Jika kosong, berita dianggap siap dipublikasikan sekarang.'),
 
                                         Toggle::make('is_featured')
@@ -136,12 +136,13 @@ class NewsForm
                                     ->components([
                                         Select::make('category_id')
                                             ->label('Kategori')
+                                            ->required()
                                             ->relationship(
                                                 'category',
                                                 'name',
-                                                modifyQueryUsing: fn (Builder $query): Builder => $query->when(
+                                                modifyQueryUsing: fn(Builder $query): Builder => $query->when(
                                                     Filament::getTenant()?->getKey(),
-                                                    fn (Builder $tenantQuery, int|string $tenantId): Builder => $tenantQuery->where('study_program_id', $tenantId)
+                                                    fn(Builder $tenantQuery, int|string $tenantId): Builder => $tenantQuery->where('study_program_id', $tenantId)
                                                 )
                                             )
                                             ->searchable()
@@ -151,9 +152,9 @@ class NewsForm
                                             ->relationship(
                                                 'tags',
                                                 'name',
-                                                modifyQueryUsing: fn (Builder $query): Builder => $query->when(
+                                                modifyQueryUsing: fn(Builder $query): Builder => $query->when(
                                                     Filament::getTenant()?->getKey(),
-                                                    fn (Builder $tenantQuery, int|string $tenantId): Builder => $tenantQuery->where('study_program_id', $tenantId)
+                                                    fn(Builder $tenantQuery, int|string $tenantId): Builder => $tenantQuery->where('study_program_id', $tenantId)
                                                 )
                                             )
                                             ->multiple()
@@ -164,11 +165,11 @@ class NewsForm
                                                     ->required()
                                                     ->maxLength(255)
                                                     ->live(onBlur: true)
-                                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
+                                                    ->afterStateUpdated(fn(Set $set, ?string $state) => $set('slug', Str::slug($state))),
                                                 TextInput::make('slug')
                                                     ->required()
                                                     ->alphaDash()
-                                                    ->dehydrateStateUsing(fn (?string $state): ?string => filled($state) ? Str::slug($state) : null),
+                                                    ->dehydrateStateUsing(fn(?string $state): ?string => filled($state) ? Str::slug($state) : null),
                                             ])
                                             ->createOptionUsing(function (array $data): int {
                                                 $tenantId = Filament::getTenant()?->getKey();
@@ -195,7 +196,7 @@ class NewsForm
                                             ->disk('public')
                                             ->collection('news_image')
                                             ->image()
-                                            ->required(fn (?string $operation): bool => $operation === 'create')
+                                            ->required(fn(?string $operation): bool => $operation === 'create')
                                             ->maxFiles(1)
                                             ->maxSize(2048) // 2MB
                                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])

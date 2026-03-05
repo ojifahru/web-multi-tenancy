@@ -5,28 +5,31 @@ namespace Database\Seeders;
 use App\Models\News;
 use App\Models\StudyProgram;
 use Illuminate\Database\Seeder;
+use InvalidArgumentException;
 
 class NewsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    public function run(?int $studyProgramId = null): void
     {
-        $studyProgramIds = StudyProgram::query()->pluck('id');
+        $studyProgramIds = $this->resolveStudyProgramIds($studyProgramId);
 
         if ($studyProgramIds->isEmpty()) {
-            News::factory()->count(12)->create();
+            if (isset($this->command)) {
+                $this->command->warn('Tidak ada program studi. Buat prodi terlebih dahulu sebelum menjalankan NewsSeeder.');
+            }
 
             return;
         }
 
-        foreach ($studyProgramIds as $studyProgramId) {
+        foreach ($studyProgramIds as $programId) {
             News::factory()
                 ->published()
                 ->count(8)
                 ->state([
-                    'study_program_id' => $studyProgramId,
+                    'study_program_id' => $programId,
                 ])
                 ->create();
 
@@ -34,7 +37,7 @@ class NewsSeeder extends Seeder
                 ->featured()
                 ->count(2)
                 ->state([
-                    'study_program_id' => $studyProgramId,
+                    'study_program_id' => $programId,
                 ])
                 ->create();
 
@@ -42,7 +45,7 @@ class NewsSeeder extends Seeder
                 ->draft()
                 ->count(3)
                 ->state([
-                    'study_program_id' => $studyProgramId,
+                    'study_program_id' => $programId,
                 ])
                 ->create();
 
@@ -50,9 +53,59 @@ class NewsSeeder extends Seeder
                 ->archived()
                 ->count(2)
                 ->state([
-                    'study_program_id' => $studyProgramId,
+                    'study_program_id' => $programId,
                 ])
                 ->create();
         }
+    }
+
+    private function resolveStudyProgramIds(?int $studyProgramId = null)
+    {
+        $studyPrograms = StudyProgram::query()
+            ->orderBy('code')
+            ->get(['id', 'code']);
+
+        if ($studyPrograms->isEmpty()) {
+            return collect();
+        }
+
+        if ($studyProgramId !== null) {
+            return $studyPrograms
+                ->where('id', $studyProgramId)
+                ->pluck('id')
+                ->values();
+        }
+
+        if (! isset($this->command)) {
+            return $studyPrograms->pluck('id');
+        }
+
+        $this->command->table(
+            ['ID', 'Kode Prodi'],
+            $studyPrograms
+                ->map(static fn (StudyProgram $studyProgram): array => [
+                    $studyProgram->id,
+                    $studyProgram->code ?: '-',
+                ])
+                ->all()
+        );
+
+        $selectedStudyProgramId = $this->command->ask('Masukkan ID prodi untuk NewsSeeder (kosongkan untuk semua prodi)');
+
+        if ($selectedStudyProgramId === null || $selectedStudyProgramId === '') {
+            return $studyPrograms->pluck('id');
+        }
+
+        if (! ctype_digit((string) $selectedStudyProgramId)) {
+            throw new InvalidArgumentException('ID prodi harus berupa angka.');
+        }
+
+        $selectedStudyProgramId = (int) $selectedStudyProgramId;
+
+        if (! $studyPrograms->contains('id', $selectedStudyProgramId)) {
+            throw new InvalidArgumentException('ID prodi tidak ditemukan.');
+        }
+
+        return collect([$selectedStudyProgramId]);
     }
 }

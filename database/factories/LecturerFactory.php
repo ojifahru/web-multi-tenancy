@@ -29,27 +29,27 @@ class LecturerFactory extends Factory
         $name = fake()->name();
 
         return [
-            'study_program_id' => fn (): int => $this->resolveStudyProgramId(),
+            'study_program_id' => fn(): int => $this->resolveStudyProgramId(),
             'nidn' => fake()->unique()->numerify('##########'),
             'name' => $name,
-            'slug' => Str::slug($name).'-'.fake()->unique()->numberBetween(100, 999999),
+            'slug' => Str::slug($name) . '-' . fake()->unique()->numberBetween(100, 999999),
             'email' => fake()->unique()->safeEmail(),
             'phone' => fake()->optional(0.7)->phoneNumber(),
-            'biography' => fake()->optional(0.85)->paragraphs(2, true),
+            'biography' => fake()->optional(0.85)->boolean() ? $this->biographyTranslations() : null,
             'is_active' => fake()->boolean(85),
         ];
     }
 
     public function active(): static
     {
-        return $this->state(fn (): array => [
+        return $this->state(fn(): array => [
             'is_active' => true,
         ]);
     }
 
     public function inactive(): static
     {
-        return $this->state(fn (): array => [
+        return $this->state(fn(): array => [
             'is_active' => false,
         ]);
     }
@@ -63,13 +63,27 @@ class LecturerFactory extends Factory
         }
 
         $studyProgram = StudyProgram::query()->create([
-            'name' => fake()->company().' Study Program',
+            'name' => [
+                'id' => 'Program Studi ' . fake()->company(),
+                'en' => fake()->company() . ' Study Program',
+            ],
             'code' => strtoupper(fake()->unique()->bothify('SP###')),
             'domain' => fake()->unique()->domainName(),
-            'description' => fake()->sentence(),
+            'description' => [
+                'id' => fake()->sentence(),
+                'en' => fake()->sentence(),
+            ],
             'is_active' => true,
         ]);
 
         return (int) $studyProgram->id;
+    }
+
+    private function biographyTranslations(): array
+    {
+        return [
+            'id' => fake()->paragraphs(2, true),
+            'en' => fake()->paragraphs(2, true),
+        ];
     }
 }
