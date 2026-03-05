@@ -54,7 +54,7 @@ class SitemapController extends Controller
                 return $this
                     ->buildLocalizedEntries(
                         $routeName,
-                        fn (string $locale): array => [],
+                        fn(string $locale): array => [],
                         $tenant->updated_at?->toAtomString()
                     )
                     ->all();
@@ -163,7 +163,7 @@ class SitemapController extends Controller
         $xDefault = $localizedUrls->get($defaultLocale, $localizedUrls->first());
 
         $alternates = $localizedUrls
-            ->map(fn (string $href, string $locale): array => [
+            ->map(fn(string $href, string $locale): array => [
                 'hreflang' => $locale,
                 'href' => $href,
             ])

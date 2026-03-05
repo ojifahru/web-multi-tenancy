@@ -1,7 +1,10 @@
 <x-public.layout :tenant="$tenant" :title="__('lecturers.title')">
     <section class="bg-uniba-surface-1 py-20 sm:py-24">
         <x-public.container class="max-w-6xl">
-            <x-public.page-header :title="__('lecturers.title')" :subtitle="__('lecturers.subtitle')" :breadcrumbs="[['label' => __('menu.beranda'), 'href' => localized_route('public.home')], ['label' => __('lecturers.title')]]">
+            <x-public.page-header :title="__('lecturers.title')" :subtitle="__('lecturers.subtitle')" :breadcrumbs="[
+                ['label' => __('menu.beranda'), 'href' => localized_route('public.home')],
+                ['label' => __('lecturers.title')],
+            ]">
                 <x-slot:icon>
                     <svg class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path

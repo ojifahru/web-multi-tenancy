@@ -26,11 +26,12 @@
                 </x-slot:actions>
             </x-public.page-header>
 
-            <div class="mt-8 grid gap-8 rounded-2xl border border-uniba-primary-blue/10 bg-uniba-surface-1 p-6 sm:p-8 lg:grid-cols-[240px,1fr]">
+            <div
+                class="mt-8 grid gap-8 rounded-2xl border border-uniba-primary-blue/10 bg-uniba-surface-1 p-6 sm:p-8 lg:grid-cols-[240px,1fr]">
                 <div>
                     @if (!empty($lecturerImage))
-                        <img src="{{ $lecturerImage }}" alt="{{ $lecturerName }}" width="480" height="480" loading="eager"
-                            fetchpriority="high" decoding="async"
+                        <img src="{{ $lecturerImage }}" alt="{{ $lecturerName }}" width="480" height="480"
+                            loading="eager" fetchpriority="high" decoding="async"
                             class="aspect-square w-full rounded-xl border border-uniba-border object-cover">
                     @else
                         <x-public.image-placeholder class="aspect-square rounded-xl border border-uniba-border"

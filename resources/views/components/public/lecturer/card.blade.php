@@ -2,7 +2,7 @@
 
 @php
     $imageUrl = $lecturer->getFirstMediaUrl('lecturer_image', 'preview');
-    $isClickable = ! empty($href);
+    $isClickable = !empty($href);
 @endphp
 
 <x-public.card :hover="$isClickable" class="overflow-hidden">
@@ -22,7 +22,8 @@
 
         <div class="min-w-0 pt-0.5">
             <div class="text-base font-semibold leading-snug text-uniba-text">{{ $lecturer->name }}</div>
-            <div class="mt-1 text-xs uppercase tracking-[0.08em] text-uniba-text-secondary">{{ __('lecturers.nidn_label') }}: {{ $lecturer->nidn }}
+            <div class="mt-1 text-xs uppercase tracking-[0.08em] text-uniba-text-secondary">
+                {{ __('lecturers.nidn_label') }}: {{ $lecturer->nidn }}
             </div>
 
             <div class="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs">

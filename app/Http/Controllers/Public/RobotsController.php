@@ -17,10 +17,10 @@ class RobotsController extends Controller
             'Allow: /',
             'Disallow: /admin',
             'Disallow: /superadmin',
-            'Sitemap: '.route('public.sitemap'),
+            'Sitemap: ' . route('public.sitemap'),
         ]);
 
-        return response($content.PHP_EOL)
+        return response($content . PHP_EOL)
             ->header('Content-Type', 'text/plain; charset=UTF-8');
     }
 }
