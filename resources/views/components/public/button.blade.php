@@ -25,14 +25,15 @@
     ];
 
     $classes = $base . ' ' . ($sizes[$size] ?? $sizes['md']) . ' ' . ($variants[$variant] ?? $variants['primary']);
+    $mergedClasses = trim($classes . ' ' . ($attributes->get('class') ?? ''));
 @endphp
 
 @if ($href)
-    <a href="{{ $href }}" {{ $attributes->merge(['class' => $classes]) }}>
+    <a href="{{ $href }}" {{ $attributes->except('class')->merge(['class' => $mergedClasses]) }}>
         {{ $slot }}
     </a>
 @else
-    <button type="{{ $type }}" {{ $attributes->merge(['class' => $classes]) }}>
+    <button type="{{ $type }}" {{ $attributes->except('class')->merge(['class' => $mergedClasses]) }}>
         {{ $slot }}
     </button>
 @endif
