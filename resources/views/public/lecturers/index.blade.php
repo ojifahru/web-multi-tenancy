@@ -44,7 +44,9 @@
             @else
                 <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     @foreach ($lecturers as $lecturer)
-                        <x-public.lecturer.card :lecturer="$lecturer" />
+                        <x-public.lecturer.card :lecturer="$lecturer" :href="!empty($lecturer->slug)
+                            ? localized_route('public.lecturers.show', ['slug' => $lecturer->slug])
+                            : null" />
                     @endforeach
                 </div>
 

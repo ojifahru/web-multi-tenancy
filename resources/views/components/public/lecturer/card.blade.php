@@ -1,10 +1,15 @@
-@props(['lecturer'])
+@props(['lecturer', 'href' => null])
 
 @php
     $imageUrl = $lecturer->getFirstMediaUrl('lecturer_image', 'preview');
+    $isClickable = ! empty($href);
 @endphp
 
-<x-public.card class="overflow-hidden">
+<x-public.card :hover="$isClickable" class="overflow-hidden">
+    @if ($isClickable)
+        <a href="{{ $href }}"
+            class="group block cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-uniba-gold focus-visible:ring-offset-2 focus-visible:ring-offset-uniba-bg">
+    @endif
     <div class="flex gap-4 p-5">
         <div class="shrink-0">
             @if (!empty($imageUrl))
@@ -31,6 +36,21 @@
                     </a>
                 @endif
             </div>
+
+            @if ($isClickable)
+                <div
+                    class="mt-4 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.08em] text-uniba-primary-blue transition group-hover:translate-x-0.5 group-hover:text-uniba-deep-blue">
+                    <span>{{ __('lecturers.view_profile') }}</span>
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd"
+                            d="M3 10a.75.75 0 01.75-.75h10.19L9.47 4.78a.75.75 0 011.06-1.06l5.5 5.25a.75.75 0 010 1.06l-5.5 5.25a.75.75 0 11-1.06-1.06l4.47-4.47H3.75A.75.75 0 013 10z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+            @endif
         </div>
     </div>
+    @if ($isClickable)
+        </a>
+    @endif
 </x-public.card>

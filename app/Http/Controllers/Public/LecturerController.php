@@ -44,4 +44,49 @@ class LecturerController extends Controller
             'search' => $search,
         ]);
     }
+
+    public function show(Request $request, string $locale, string $slug): View
+    {
+        /** @var StudyProgram|null $tenant */
+        $tenant = $request->attributes->get('tenant');
+
+        abort_unless($tenant instanceof StudyProgram, 404);
+
+        $normalizedSlug = trim(urldecode($slug));
+
+        $lecturer = Lecturer::query()
+            ->where('study_program_id', $tenant->id)
+            ->where('is_active', true)
+            ->with('media')
+            ->where('slug', $normalizedSlug)
+            ->first();
+
+        if (! $lecturer && $normalizedSlug !== '') {
+            $lecturer = Lecturer::query()
+                ->where('study_program_id', $tenant->id)
+                ->where('is_active', true)
+                ->with('media')
+                ->get()
+                ->first(function (Lecturer $candidate) use ($normalizedSlug): bool {
+                    return strtolower(trim($candidate->slug)) === strtolower($normalizedSlug);
+                });
+        }
+
+        abort_if(! $lecturer, 404);
+
+        $relatedLecturers = Lecturer::query()
+            ->where('study_program_id', $tenant->id)
+            ->where('is_active', true)
+            ->whereKeyNot($lecturer->id)
+            ->with('media')
+            ->orderBy('name')
+            ->limit(4)
+            ->get();
+
+        return view('public.lecturers.show', [
+            'tenant' => $tenant,
+            'lecturer' => $lecturer,
+            'relatedLecturers' => $relatedLecturers,
+        ]);
+    }
 }

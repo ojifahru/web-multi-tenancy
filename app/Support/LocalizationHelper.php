@@ -35,6 +35,7 @@ class LocalizationHelper
             'public.news.index' => $locale === 'id' ? 'public.news.index.id' : 'public.news.index',
             'public.news.show' => $locale === 'id' ? 'public.news.show.id' : 'public.news.show',
             'public.lecturers.index' => $locale === 'id' ? 'public.lecturers.index.id' : 'public.lecturers.index',
+            'public.lecturers.show' => $locale === 'id' ? 'public.lecturers.show.id' : 'public.lecturers.show',
             'public.facilities.index' => $locale === 'id' ? 'public.facilities.index.id' : 'public.facilities.index',
             'public.facilities.show' => $locale === 'id' ? 'public.facilities.show.id' : 'public.facilities.show',
             'public.about' => $locale === 'id' ? 'public.about.id' : 'public.about',

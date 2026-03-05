@@ -6,6 +6,8 @@ use App\Http\Controllers\Public\FacilityController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\LecturerController;
 use App\Http\Controllers\Public\NewsController;
+use App\Http\Controllers\Public\RobotsController;
+use App\Http\Controllers\Public\SitemapController;
 use App\Http\Middleware\SetLocaleFromRoute;
 use App\Http\Middleware\SetTenantByDomain;
 use Illuminate\Http\Request;
@@ -22,6 +24,14 @@ Route::middleware([SetTenantByDomain::class])
         return redirect()->to("/{$locale}");
     })
     ->name('public.locale.redirect');
+
+Route::middleware([SetTenantByDomain::class])
+    ->get('/sitemap.xml', SitemapController::class)
+    ->name('public.sitemap');
+
+Route::middleware([SetTenantByDomain::class])
+    ->get('/robots.txt', RobotsController::class)
+    ->name('public.robots');
 
 Route::group([
     'middleware' => [SetTenantByDomain::class, SetLocaleFromRoute::class],
@@ -49,8 +59,14 @@ Route::group([
     Route::get('/lecturers', [LecturerController::class, 'index'])
         ->name('public.lecturers.index');
 
+    Route::get('/lecturers/{slug}', [LecturerController::class, 'show'])
+        ->name('public.lecturers.show');
+
     Route::get('/dosen', [LecturerController::class, 'index'])
         ->name('public.lecturers.index.id');
+
+    Route::get('/dosen/{slug}', [LecturerController::class, 'show'])
+        ->name('public.lecturers.show.id');
 
     // Facilities Routes
     Route::get('/facilities', [FacilityController::class, 'index'])
